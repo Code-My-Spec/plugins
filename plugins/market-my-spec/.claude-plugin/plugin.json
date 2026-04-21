@@ -1,0 +1,19 @@
+{
+  "name": "market-my-spec",
+  "version": "0.1.0",
+  "description": "Use Claude Code as your marketing strategist. Guided 8-step flow that interviews you, researches your customers, and produces an executable 90-day plan. Works for software, consulting, trades, and services.",
+  "author": {
+    "name": "CodeMySpec",
+    "url": "https://codemyspec.com"
+  },
+  "homepage": "https://github.com/Code-My-Spec/plugins",
+  "repository": "https://github.com/Code-My-Spec/plugins",
+  "license": "MIT",
+  "keywords": [
+    "marketing",
+    "strategy",
+    "positioning",
+    "customer-research",
+    "jtbd"
+  ]
+}
