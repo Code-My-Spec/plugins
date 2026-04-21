@@ -10,14 +10,15 @@
   },
   "plugins": [
     {
-      "name": "codemyspec",
-      "source": "./",
-      "description": "Design architecture, write specs, generate tests, and implement Phoenix apps with specialized AI agents"
-    },
-    {
       "name": "market-my-spec",
       "source": "./plugins/market-my-spec",
       "description": "Use Claude Code as your marketing strategist — guided 8-step strategy flow with persona research agents. Industry-agnostic (software, consulting, trades, services)."
+    },
+    {
+      "description": "Specification-driven development for Phoenix applications — design architecture, write specs, generate tests, and implement with specialized AI agents",
+      "name": "codemyspec",
+      "source": "./plugins/codemyspec",
+      "version": "1.4.17"
     }
   ]
 }

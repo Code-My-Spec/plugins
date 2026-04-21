@@ -32,15 +32,15 @@ detect_platform() {
 
   case "$OS" in
     Darwin) OS="darwin" ;;
-    Linux)  OS="linux" ;;
+    Linux) OS="linux" ;;
     MINGW*|MSYS*|CYGWIN*) OS="windows" ;;
-    *)      err "Unsupported OS: $OS"; exit 1 ;;
+    *) err "Unsupported OS: $OS"; exit 1 ;;
   esac
 
   case "$ARCH" in
     arm64|aarch64) ARCH="arm64" ;;
-    x86_64|amd64)  ARCH="x64" ;;
-    *)              err "Unsupported architecture: $ARCH"; exit 1 ;;
+    x86_64|amd64) ARCH="x64" ;;
+    *) err "Unsupported architecture: $ARCH"; exit 1 ;;
   esac
 
   if [ "$OS" = "windows" ]; then
@@ -105,7 +105,7 @@ main() {
   echo "     claude plugin install $SCRIPT_DIR"
   echo ""
   echo "  2. Open Claude Code in your Phoenix project and run:"
-  echo "     /codemyspec:init auth"
+  echo "     /codemyspec:authenticate"
   echo ""
 }
 
