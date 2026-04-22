@@ -1,6 +1,9 @@
 # market-my-spec
 
-Use Claude Code as your marketing strategist. Guided 8-step strategy flow that interviews you, dispatches research agents for customer personas and competitive alternatives, then synthesizes positioning, messaging, channels, and a 90-day plan.
+Use Claude Code as your marketing strategist, then as your daily operator.
+
+- `/marketing-strategy` — guided 8-step strategy flow. Interviews you, dispatches research agents, produces positioning, messaging, channels, and a 90-day plan.
+- `/daily-plan` — picks today's 1-3 marketing activities from your strategy, points you at the skills that execute them, and keeps your activity roster honest (weekly review, gap detection, project-local skill scaffolding, archival of dead activities).
 
 Industry-agnostic — works for software founders, consultants, trades, services, and B2C operators.
 
@@ -13,13 +16,12 @@ From a Claude Code session:
 /plugin install market-my-spec@codemyspec
 ```
 
-## Run
+## The flow
 
-```
-/marketing-strategy
-```
-
-First run: full 8-step flow from scratch. Later runs: iteration mode — reads existing `marketing/` files, asks what's changed, updates in place.
+1. **Strategy first** — `/marketing-strategy`. Full 8-step flow on first run; iteration mode on later runs. Produces `marketing/01_current_state.md` through `marketing/08_plan.md`.
+2. **Daily execution** — `/daily-plan`. Reads the strategy, picks today's activities, logs to `marketing/daily/YYYY-MM-DD.md`.
+3. **Weekly re-tune** — `/daily-plan review`. Hit-rate analysis, loop-shift check, roster adjustments.
+4. **As needed** — `/daily-plan add <name>` to scaffold a new activity (writes a project-local skill in `.claude/skills/`), `/daily-plan archive <name>` to bench an unused one.
 
 ## The 8 steps
 
@@ -40,7 +42,7 @@ Writes to your project's `marketing/` directory:
 
 ```
 marketing/
-├── 01_current_state.md
+├── 01_current_state.md           ← produced by /marketing-strategy
 ├── 02_jobs_and_segments.md
 ├── 03_personas.md
 ├── 04_beachhead.md
@@ -48,12 +50,18 @@ marketing/
 ├── 06_messaging.md
 ├── 07_channels.md
 ├── 08_plan.md
-└── research/
-    ├── persona_<segment>.md
-    ├── alternatives.md
-    ├── competitor_positioning.md
-    └── channel_<name>.md
+├── research/
+│   ├── persona_<segment>.md
+│   ├── alternatives.md
+│   ├── competitor_positioning.md
+│   └── channel_<name>.md
+├── activities.md                 ← produced by /daily-plan (roster)
+├── operating_rhythm.md           ← updated by /daily-plan review
+└── daily/
+    └── YYYY-MM-DD.md             ← one file per daily run
 ```
+
+Scaffolded activities become real skills in `.claude/skills/<name>/` in the project (not user-global) so they're committable alongside the strategy.
 
 ## Business types supported
 
