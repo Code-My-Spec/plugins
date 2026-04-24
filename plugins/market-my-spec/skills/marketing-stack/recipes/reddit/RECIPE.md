@@ -1,16 +1,27 @@
 ---
 name: reddit
+tier: core
 channel: reddit
 loop_fit: [acquisition]
 primary_mcp_status: community-active
 requires_server_install: false
 requires_deploy: false
+detection:
+  type: mcp
+  args_contains: ["reddit-mcp-buddy"]
+validation:
+  type: tool
+  intent: "browse r/elixir hot, 3 posts"
+  preferred_tool_pattern: "browse_subreddit"
+  expect:
+    shape: "array.{title,author,score,url}"
+    min_items: 1
 ---
 
 # Reddit
 
 ## What it is
-Reddit browsing, search, and user/thread analysis via `reddit-mcp-buddy` (karanb192). 621 stars, v1.1.12 (Feb 2026). Three-tier auth: anonymous (10 rpm), app-only (60 rpm), authenticated (100 rpm).
+Reddit browsing, search, and user/thread analysis via `reddit-mcp-buddy` (karanb192). Actively maintained as of 2026. Three-tier auth: anonymous (10 rpm), app-only (60 rpm), authenticated (100 rpm).
 
 **Read-only MCP.** Posting/commenting is a separate concern — best through Postiz (which supports Reddit) or manual. Matches the "John dictates, AI polishes" discipline.
 
@@ -34,7 +45,19 @@ Reddit browsing, search, and user/thread analysis via `reddit-mcp-buddy` (karanb
    claude mcp add --transport stdio reddit -s user -- npx -y reddit-mcp-buddy
    ```
 3. Add env vars to `.env` per the tier you chose.
-4. Reference `.env` from `~/.claude.json` env block for the reddit MCP entry.
+4. Reference `.env` from the MCP config. If you used `claude mcp add` above, the env passes through automatically when you set the values in `.env`. To verify or set explicitly, your `~/.claude.json` should look like:
+   ```json
+   "reddit": {
+     "command": "npx",
+     "args": ["-y", "reddit-mcp-buddy"],
+     "env": {
+       "REDDIT_CLIENT_ID": "${REDDIT_CLIENT_ID}",
+       "REDDIT_CLIENT_SECRET": "${REDDIT_CLIENT_SECRET}",
+       "REDDIT_USERNAME": "${REDDIT_USERNAME}",
+       "REDDIT_PASSWORD": "${REDDIT_PASSWORD}"
+     }
+   }
+   ```
 
 ## .env requirements
 ```
@@ -46,8 +69,10 @@ REDDIT_CLIENT_SECRET=        # 27-char from Reddit app page, labeled "secret"
 
 # Tier 3 (authenticated, 100 rpm) — adds:
 REDDIT_USERNAME=             # account that created the script app
-REDDIT_PASSWORD=             # account password (use dedicated bot account)
+REDDIT_PASSWORD=             # account password — if 2FA is enabled, use an app-specific password
 ```
+
+**Auth caveat:** Tier 3 uses the OAuth Resource Owner Password Credentials grant. Reddit only supports this for **script-type apps** authenticating as the **app's owner account**. If your account has 2FA enabled, generate an app password (Reddit Account Settings → Apps & Notifications) and use that as `REDDIT_PASSWORD`. If you don't want password auth at all, stay on Tier 2 (60 rpm is plenty for most daily-scan use).
 
 ## Validation
 Ask Claude: "Using reddit-mcp-buddy, browse r/elixir hot, 3 posts." Expect JSON with title, author, url, score.

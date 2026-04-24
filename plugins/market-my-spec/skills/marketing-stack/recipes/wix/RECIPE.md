@@ -1,35 +1,64 @@
 ---
 name: wix
+tier: core
 channel: content
 loop_fit: [acquisition, activation, monetization]
-primary_mcp_status: official-native-connector
+primary_mcp_status: official-remote-http
 requires_server_install: false
 requires_deploy: false
+detection:
+  type: mcp
+  args_contains: ["mcp.wix.com/mcp"]
+validation:
+  type: tool
+  intent: "list 5 most recent blog posts"
+  expect:
+    shape: "array.{id,title}"
+    min_items: 1
 ---
 
 # Wix
 
 ## What it is
-Wix CMS + CRM + store via the **official Wix MCP** — a native built-in connector in Claude. Zero install, zero `.env`, Wix handles OAuth and hosts the MCP on their own infrastructure.
+Wix CMS + CRM + store via the **official remote Wix MCP server** at `https://mcp.wix.com/mcp`. HTTP transport — no local install of MCP code, no `.env` secrets. OAuth happens during the first chat with your LLM client.
+
+Requires **Node.js 19.9+** on the user's machine (Wix CLI runs OAuth flow).
 
 ## Unlocks
 - Activities: "draft weekly blog post as Wix draft," "audit product catalog," "weekly new-contacts review," "bookings pipeline check," "blog post SEO field edits"
 
 ## Prerequisites
-- A Wix account with admin access to the site(s) to expose
+- A Wix account
+- Node.js 19.9+ installed locally
+- Admin access to the site(s) to expose
 
 ## Install steps
-1. Open Claude (Desktop or Code) → Settings → Connectors → find **Wix** in the list.
-2. Click Enable / Connect.
-3. OAuth browser flow prompts — sign in to Wix, authorize.
-4. Grant the specific Wix site(s) you want exposed. If multi-site, repeat per site.
-5. Done.
+1. Add the Wix remote MCP to your Claude config (`~/.claude.json`, `.mcp.json` for project-scoped, or via `claude mcp add`):
+   ```json
+   {
+     "mcpServers": {
+       "wix-mcp-remote": {
+         "type": "http",
+         "url": "https://mcp.wix.com/mcp"
+       }
+     }
+   }
+   ```
+   Or via CLI: `claude mcp add --transport http wix-mcp-remote -s user https://mcp.wix.com/mcp`
+2. Restart Claude Code (or your client) so the MCP loads.
+3. First Wix-related call triggers the OAuth flow — Wix will prompt you to sign in (or create an account) and authorize the site(s) you want exposed.
+4. For multi-site users, authorize each site separately when first accessed.
 
 ## .env requirements
-None. Connector manages auth.
+None. Wix manages auth server-side.
 
 ## Validation
-Ask Claude: "Using the Wix connector, list my 5 most recent blog posts." Expect JSON/table with post IDs and titles.
+**Intent:** "list 5 most recent blog posts."
+**Expect:** non-empty array with at least `id` and `title` per item.
+
+If validation fails:
+- Confirm Node.js 19.9+ is installed (`node --version`)
+- Re-trigger OAuth by clearing client cache and restarting
 
 ## Conventions to seed
 Write `marketing/conventions/content.md` (create or merge):
@@ -39,7 +68,7 @@ Write `marketing/conventions/content.md` (create or merge):
 
 ## Drafting flow
 - New post → Wix draft first; never publish directly from the MCP.
-- SEO fields (title, description, slug, OG image) filled in before publish.
+- SEO fields (title, description, slug, OG image) filled before publish.
 
 ## Tagging
 - Use existing Wix tags; don't create new ones without intent.
@@ -51,11 +80,11 @@ Write `marketing/conventions/content.md` (create or merge):
 ```
 
 ## Gotchas
-- Wix Studio (newer dev-oriented product) has fuller MCP coverage than classic Wix Editor sites.
-- Scoped per-site — multi-site users authorize each separately.
-- If user has multiple Wix sites, clarify which is the marketing target.
-- Programmatic non-Claude access needs Wix REST API directly (different setup).
+- Wix Studio (newer dev product) has fuller MCP coverage than classic Wix Editor sites.
+- Multi-site: authorize each separately. Confusion source if one works and another doesn't.
+- Programmatic non-Claude access uses Wix REST API directly (different setup, not this recipe).
+- HTTP transport — needs network. No offline use.
 
 ## Links
-- Wix MCP: https://www.wix.com/studio/developers/mcp-server
+- Wix MCP setup: https://www.wix.com/studio/developers/mcp-server
 - Docs: https://dev.wix.com/docs/api-reference/articles/wix-mcp/about-the-wix-mcp

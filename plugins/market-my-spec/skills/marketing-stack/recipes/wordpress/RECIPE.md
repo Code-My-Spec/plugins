@@ -1,18 +1,30 @@
 ---
 name: wordpress
+tier: core
 channel: content
 loop_fit: [acquisition, activation, monetization]
 primary_mcp_status: official-server-plus-client
 requires_server_install: true
 requires_deploy: false
+detection:
+  type: mcp
+  args_contains: ["@automattic/mcp-wordpress-remote", "mcp-wordpress-remote"]
+  env_var: "WP_API_URL"
+validation:
+  type: tool
+  intent: "list 5 most recent posts"
+  preferred_tool_pattern: "list_posts"
+  expect:
+    shape: "array.{id,title}"
+    min_items: 0
 ---
 
 # WordPress
 
 ## What it is
 WordPress CMS + WooCommerce via a two-piece MCP architecture:
-- **Server-side (on the WP site):** `WordPress/mcp-adapter` — official WordPress.org PHP plugin, 931 stars, v0.5.0 (Apr 2026)
-- **Client-side (on the user's machine):** `@automattic/mcp-wordpress-remote` — Automattic Node.js MCP, active
+- **Server-side (on the WP site):** `WordPress/mcp-adapter` — official WordPress.org PHP plugin, actively maintained
+- **Client-side (on the user's machine):** `@automattic/mcp-wordpress-remote` — Automattic Node.js MCP, actively maintained
 
 OAuth 2.1 default. Works for both self-hosted WordPress and WordPress.com (Business plan and up).
 

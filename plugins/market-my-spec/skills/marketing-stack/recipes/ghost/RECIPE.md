@@ -1,10 +1,22 @@
 ---
 name: ghost
+tier: core
 channel: content
 loop_fit: [acquisition, activation, monetization]
 primary_mcp_status: community-active
 requires_server_install: false
 requires_deploy: false
+detection:
+  type: mcp
+  args_contains: ["@fanyangmeng/ghost-mcp", "ghost-mcp"]
+  env_var: "GHOST_API_URL"
+validation:
+  type: tool
+  intent: "list 5 most recent posts"
+  preferred_tool_pattern: "browse_posts"
+  expect:
+    shape: "array.{id,title,slug}"
+    min_items: 0
 ---
 
 # Ghost

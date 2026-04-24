@@ -1,10 +1,23 @@
 ---
 name: linkedin
+tier: extension
 channel: social
 loop_fit: [acquisition, activation]
 primary_mcp_status: via-postiz
 requires_server_install: false
 requires_deploy: false
+depends_on: [postiz]
+detection:
+  type: derived
+  source_recipe: postiz
+  channel_match: "linkedin"
+validation:
+  type: tool
+  intent: "list connected linkedin channels via postiz"
+  preferred_tool_pattern: "list_channels"
+  expect:
+    shape: "array.{id,name,type}"
+    contains_value: "linkedin"
 ---
 
 # LinkedIn

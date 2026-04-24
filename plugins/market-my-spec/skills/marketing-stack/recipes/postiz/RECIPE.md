@@ -1,10 +1,21 @@
 ---
 name: postiz
+tier: extension
 channel: social
 loop_fit: [acquisition, retention]
 primary_mcp_status: bundled
 requires_server_install: false
 requires_deploy: true
+detection:
+  type: mcp
+  args_contains: ["postiz-mcp", "@gitroom/postiz"]
+validation:
+  type: tool
+  intent: "list connected social channels"
+  preferred_tool_pattern: "list_channels"
+  expect:
+    shape: "array.{id,name}"
+    min_items: 0
 ---
 
 # Postiz
@@ -24,8 +35,6 @@ Self-hosted open-source social media scheduler that cross-posts to ~15 networks 
   - **Bring-your-own hosted URL** (for production — user deploys elsewhere)
 - Postgres + Redis (included in Postiz's docker-compose)
 - A domain with TLS if deploying for production (social OAuth redirects need HTTPS)
-
-**V2 roadmap note:** Hetzner deployment helper is planned but not in v1. v3 might be a hosted offering. For now, deploy is user-driven.
 
 ## Install steps
 

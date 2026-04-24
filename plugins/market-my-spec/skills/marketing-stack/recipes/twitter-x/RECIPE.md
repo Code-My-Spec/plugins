@@ -1,10 +1,23 @@
 ---
 name: twitter-x
+tier: extension
 channel: social
 loop_fit: [acquisition]
 primary_mcp_status: via-postiz-or-paid
 requires_server_install: false
 requires_deploy: false
+depends_on: [postiz]
+detection:
+  type: derived
+  source_recipe: postiz
+  channel_match: "twitter"
+validation:
+  type: tool
+  intent: "list connected twitter channels via postiz"
+  preferred_tool_pattern: "list_channels"
+  expect:
+    shape: "array.{id,name,type}"
+    contains_value: "twitter"
 ---
 
 # Twitter / X

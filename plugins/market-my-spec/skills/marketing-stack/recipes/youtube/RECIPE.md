@@ -1,10 +1,19 @@
 ---
 name: youtube
+tier: extension
 channel: youtube
 loop_fit: [acquisition]
 primary_mcp_status: direct-api
 requires_server_install: false
 requires_deploy: false
+detection:
+  type: env
+  env_var: "YT_REFRESH_TOKEN"
+validation:
+  type: shell
+  command: 'curl -s "https://www.googleapis.com/youtube/v3/channels?part=snippet&id=$YT_CHANNEL_ID&key=$YT_API_KEY"'
+  expect:
+    contains: '"items"'
 ---
 
 # YouTube
@@ -41,7 +50,7 @@ No good YouTube MCP published as of April 2026. Direct Data API works; video-use
 2. `pip install video-use` (or `uv add video-use`)
 3. `playwright install chromium` — brings down Chromium for the agent loop.
 4. Set an LLM API key in `.env` for video-use's internal agent.
-5. Wrap as a local CLI script or a custom MCP if you want Claude-native tool access. No published MCP as of Apr 2026.
+5. Wrap as a local CLI script or a custom MCP if you want Claude-native tool access. No widely-adopted YouTube MCP exists at time of writing — verify before assuming.
 
 ## .env requirements
 ```

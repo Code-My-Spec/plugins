@@ -1,10 +1,20 @@
 ---
 name: stripe
+tier: core
 channel: revenue
 loop_fit: [monetization, activation]
 primary_mcp_status: official
 requires_server_install: false
 requires_deploy: false
+detection:
+  type: mcp
+  args_contains: ["@stripe/mcp", "stripe/agent-toolkit"]
+  env_var: "STRIPE_RESTRICTED_KEY"
+validation:
+  type: shell
+  command: 'curl -s -u "$STRIPE_RESTRICTED_KEY:" "https://api.stripe.com/v1/subscriptions?limit=1"'
+  expect:
+    contains: '"object": "list"'
 ---
 
 # Stripe

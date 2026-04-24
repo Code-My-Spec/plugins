@@ -1,10 +1,22 @@
 ---
 name: facebook-ads
+tier: extension
 channel: social
 loop_fit: [acquisition]
 primary_mcp_status: community-active
 requires_server_install: false
 requires_deploy: false
+detection:
+  type: mcp
+  args_contains: ["meta-mcp", "meta-ads-mcp"]
+  env_var: "META_AD_ACCOUNT_ID"
+validation:
+  type: tool
+  intent: "list ad campaigns"
+  preferred_tool_pattern: "list_campaigns"
+  expect:
+    shape: "array.{id,name,status}"
+    min_items: 0
 ---
 
 # Facebook Ads (Meta Marketing API)

@@ -1,8 +1,46 @@
 # Install one recipe (`/marketing-stack install <name>`)
 
-Guided install for a single recipe. Reads `recipes/<name>/RECIPE.md`, walks through it with the user, ends with a validation call.
+Guided install for a single recipe. Reads `recipes/<name>/RECIPE.md`, walks through it with the user, ends with a structured validation call.
 
 **Time in user's mouth: 5-30 minutes depending on recipe.** Some (wix, reddit, ghost) are ~5 min. Postiz is the outlier (30+ due to deploy).
+
+## Dry-run mode (`--plan`)
+
+If the argument includes `--plan`, run in **dry-run mode**: read the recipe, simulate every phase (prerequisites check, install steps, `.env` writes, MCP registration, conventions seeding, validation), and print exactly what *would* happen. **Make no changes.** No Write, no Bash, no Edit to settings files.
+
+Dry-run output format:
+```
+# Plan: install <recipe>
+
+## Would check prerequisites
+- [prereq 1 — status if detectable]
+- ...
+
+## Would execute install steps
+1. [step description] — [shell command shown, NOT run]
+2. ...
+
+## Would write to .env
+```
+KEY_1=<placeholder — user provides at real install>
+KEY_2=<placeholder>
+```
+
+## Would register MCP
+```json
+<MCP config snippet>
+```
+
+## Would seed conventions
+- marketing/conventions/<file>.md (create / merge existing)
+
+## Would validate via
+<validation block from recipe frontmatter>
+```
+
+Then exit. No user prompts, no commits.
+
+For `install-for-channel <channel> --plan`, the `install_for_channel.md` step loops plan-mode per bundle recipe.
 
 ## Phase 1 — Load the recipe
 
@@ -12,15 +50,22 @@ Read `recipes/<name>/RECIPE.md`. If the file doesn't exist:
 - Suggest close matches from the recipe inventory in `SKILL.md`
 - Offer to show the full inventory: "recipe `<name>` not found. Did you mean: `<closest>`? Run `/marketing-stack` (no args) to see the full list."
 
-If the recipe file exists, read it. Recipes are structured markdown with these sections:
+If the recipe file exists, read it. Recipes are structured markdown with:
 
-- Frontmatter (yaml): `name`, `channel`, `loop_fit`, `requires_server_install`, `requires_deploy`, `primary_mcp_status`
+**Frontmatter (yaml)** — machine-readable metadata:
+- `name`, `tier` (core | extension), `channel`, `loop_fit`
+- `primary_mcp_status`, `requires_server_install`, `requires_deploy`
+- `depends_on` (optional, list of other recipes)
+- `detection` block — how to tell if this recipe is installed (see inventory.md)
+- `validation` block — structured spec for post-install verification (see Phase 7)
+
+**Body sections:**
 - `## What it is`
 - `## Unlocks`
 - `## Prerequisites`
 - `## Install steps`
 - `## .env requirements`
-- `## Validation`
+- `## Validation` — human-readable mirror of the frontmatter spec
 - `## Conventions to seed`
 - `## Gotchas`
 - `## Links`
@@ -117,7 +162,11 @@ Env vars in MCP config should interpolate from `.env`:
 }
 ```
 
-If the user's Claude Code version doesn't support `.env` interpolation in MCP configs, fall back to using `env` blocks with inline values — but **warn the user explicitly** that this is writing secrets into `~/.claude.json`, against the `.env`-only discipline, and recommend upgrading Claude Code.
+If the user's Claude Code version doesn't support `.env` interpolation in MCP configs, **stop the install** with an error:
+
+> "Your Claude Code version doesn't support env interpolation in MCP configs. Installing this recipe would require writing secrets into `~/.claude.json`, which violates the `.env`-only rule. Upgrade Claude Code (`claude --update`) and re-run."
+
+No fallback. The rule is the rule. Workarounds are how secrets end up in committed files six months later.
 
 ## Phase 6 — Seed conventions
 
@@ -130,12 +179,44 @@ Read the recipe's `## Conventions to seed` section. For each file:
 
 If the recipe has no conventions section, skip this phase.
 
-## Phase 7 — Validate
+## Phase 7 — Validate (structured)
 
-Run the `## Validation` call from the recipe. This is the moment of truth.
+Read the `validation:` frontmatter block from the recipe. It has one of two shapes:
 
-- If it works: mark the recipe `ready` in internal state (to be written to `infrastructure.md` later).
-- If it fails: show the exact error, match it against the `## Gotchas` section if any match, and either (a) fix it with the user's input, or (b) mark the recipe `setup-pending` and point at `/marketing-stack fix <name>` for a future session.
+**Shell validation** (most deterministic — preferred when available):
+```yaml
+validation:
+  type: shell
+  command: 'curl -s -H "Authorization: Bearer $STRIPE_RESTRICTED_KEY" ...'
+  expect:
+    contains: '"object": "list"'
+    # OR: not_contains: "FAILED"
+    # OR: exit_code: 0
+```
+Run the command (with env vars resolved from `.env`). Compare output against `expect`. Pass if all clauses match.
+
+**Tool validation** (MCP-mediated — used when shell isn't practical):
+```yaml
+validation:
+  type: tool
+  intent: "list 5 most recent posts"
+  preferred_tool_pattern: "browse_posts"
+  expect:
+    shape: "array.{id,title,slug}"
+    min_items: 0
+```
+Process:
+1. List tools exposed by the registered MCP (via `mcp__list_tools` or the client's tool discovery).
+2. Find the tool whose name contains `preferred_tool_pattern`.
+3. Invoke it with arguments inferred from `intent` (usually "list ~5 items of <thing>").
+4. Compare the response to `expect.shape` — parse as JSON, check each expected field is present, and count items against `min_items` / `contains_value`.
+
+**Both types produce a pass/fail verdict.**
+
+- Pass → mark the recipe `state: ready` in internal working state. Will be written to `infrastructure.md` on next `blueprint`.
+- Fail → show the exact error output. Match against the recipe's `## Gotchas` section for hints. Offer two options:
+  - Fix now with user's input (return to an earlier phase)
+  - Defer with `state: partial` or `state: broken`, point at `/marketing-stack fix <name>` for next session.
 
 Don't pretend success. A recipe without a passing validation is not ready.
 
@@ -158,8 +239,10 @@ Don't dump the full recipe content. Point at files.
 ## Anti-patterns
 
 - **Installing without prerequisites.** Every failure-to-install I've seen in real use is a missed prerequisite. Check hard.
-- **Writing secrets outside `.env`.** Treat this as a hard rule. Violations are bugs.
-- **Silent success.** Every install ends with the validation call actually passing.
+- **Writing secrets outside `.env`.** Hard rule, no fallback. Violations are bugs.
+- **Silent success.** Every install ends with the validation spec actually passing.
 - **Optimistic auto-registration of MCPs without consent.** `claude mcp add` modifies user state. Always confirm.
 - **Glossing over server-side installs.** WordPress mcp-adapter install, Postiz deploy — these require explicit user action on their side. Document, verify, never skip.
 - **Skipping convention seeding.** The conventions files are small but load-bearing — they're what makes the daily-plan skill able to run the activity correctly.
+- **Natural-language validation.** Validation spec is structured (frontmatter). Don't invent prose calls.
+- **`--plan` that isn't actually dry.** If `--plan` runs ANY mutating command, that's a bug — the whole point is risk-free preview.

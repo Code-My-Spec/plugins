@@ -12,6 +12,7 @@ Before asking, read:
 
 - `marketing/activities.md` — current roster with status and last-used dates
 - `marketing/08_plan.md` — specifically the current week/cycle section
+- `marketing/infrastructure.md` if present — recipe state per `/marketing-stack`
 - Last 3 files in `marketing/daily/` (use `ls marketing/daily/ | sort -r | head -3`)
 - Any analytics artifacts in the project (e.g. `reports/`, `knowledge/analytics*`) — use Glob to find them
 
@@ -21,6 +22,7 @@ From these, you should already know:
 - What was attempted yesterday and whether it completed
 - Any deferred activities from prior days
 - Cadence-due activities (daily ones always due; weekly ones due if not run in 7 days)
+- Which activities are **infrastructure-runnable** vs blocked (see Phase 1.5)
 
 Then ask **one** signal question. Pick the most useful of these based on what's missing from the files:
 
@@ -29,6 +31,16 @@ Then ask **one** signal question. Pick the most useful of these based on what's 
 - "How did [yesterday's activity] go? Want to log the outcome?" (if yesterday's log is empty)
 
 Wait for the answer. Don't pile on questions.
+
+## Phase 1.5 — Infrastructure check
+
+If `marketing/infrastructure.md` exists, build a runnable-set:
+
+1. Parse the Recipes tables in `infrastructure.md`. For each recipe, extract its `state` column (`ready` | `partial` | `broken` | `absent`).
+2. Parse `marketing/activities.md`. For each activity row, check its Infrastructure column (if present). The activity is **runnable** iff every listed recipe is `state: ready`.
+3. Build the lookup: `{activity_name → runnable: bool, blocking_recipes: [<name>]}`.
+
+If `marketing/infrastructure.md` does NOT exist: skip Phase 1.5. All activities are treated as runnable (legacy behavior, same as pre-integration). Note in the daily file: "Infrastructure unknown (no `marketing/infrastructure.md`) — run `/marketing-stack blueprint` to enable gating."
 
 ## Phase 2 — Loop-shift check
 
@@ -59,6 +71,9 @@ If they push through, note it in the daily file and continue. If they switch to 
 - **Max 3 activities.** If you can't narrow down, ask the user to break the tie.
 - **Skip `gap` and `archived` activities.** A gap can't be picked — if a gap activity is the only one due, surface it: "Today's clear choice is [activity] but it's a gap. Want to scaffold it now with `/daily-plan add <name>`?"
 - **Skip `dormant` activities unless the user explicitly wants to revive one.** Dormant = intentionally benched.
+- **Skip infrastructure-blocked activities.** If Phase 1.5 flagged an activity as not-runnable (blocking recipe not `ready`), surface it but don't pick it:
+  > "Today's clear choice is [activity] but [recipe] is `state: <state>`. Run `/marketing-stack fix <recipe>` first, or pick the next-highest activity."
+  If ALL top candidates are infrastructure-blocked, recommend the `/marketing-stack fix` path for the most-blocking recipe before doing anything else today.
 
 **Ad-hoc mode (`/daily-plan run <name>`):**
 

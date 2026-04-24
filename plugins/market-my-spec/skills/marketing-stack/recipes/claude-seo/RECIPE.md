@@ -1,10 +1,21 @@
 ---
 name: claude-seo
+tier: core
 channel: seo
 loop_fit: [acquisition, activation]
 primary_mcp_status: full-plugin
 requires_server_install: false
 requires_deploy: false
+detection:
+  type: skill
+  skill_path: "~/.claude/skills/seo/SKILL.md"
+  config_path: "~/.config/claude-seo/google-api.json"
+validation:
+  type: shell
+  command: 'python ~/.claude/skills/seo-google/scripts/google_auth.py --check --json 2>&1 || echo "AUTH_CHECK_FAILED"'
+  expect:
+    contains: '"tier"'
+    not_contains: "AUTH_CHECK_FAILED"
 ---
 
 # claude-seo

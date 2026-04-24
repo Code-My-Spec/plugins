@@ -1,10 +1,20 @@
 ---
 name: gsc
+tier: extension
 channel: seo
 loop_fit: [acquisition]
 primary_mcp_status: via-claude-seo
 requires_server_install: false
 requires_deploy: false
+depends_on: [claude-seo]
+detection:
+  type: derived
+  source_recipe: claude-seo
+validation:
+  type: shell
+  command: 'python ~/.claude/skills/seo-google/scripts/google_auth.py --check --json 2>&1 | grep -i gsc || echo "GSC_NOT_AVAILABLE"'
+  expect:
+    not_contains: "GSC_NOT_AVAILABLE"
 ---
 
 # Google Search Console

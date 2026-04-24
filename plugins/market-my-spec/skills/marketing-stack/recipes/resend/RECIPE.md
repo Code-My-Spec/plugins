@@ -1,10 +1,19 @@
 ---
 name: resend
+tier: core
 channel: email
 loop_fit: [acquisition, activation, retention]
 primary_mcp_status: direct-api
 requires_server_install: false
 requires_deploy: false
+detection:
+  type: env
+  env_var: "RESEND_API_KEY"
+validation:
+  type: shell
+  command: 'curl -s -H "Authorization: Bearer $RESEND_API_KEY" "https://api.resend.com/domains"'
+  expect:
+    contains: '"data"'
 ---
 
 # Resend

@@ -31,19 +31,19 @@ Don't block. Users can override. But surface the friction.
 
 ## Phase 3 — Install recipes in bundle order
 
-Bundle map (from `SKILL.md`):
+Bundle map (from `SKILL.md`). `[required]` recipes install by default; `[optional]` recipes prompt inline with a yes/no.
 
 ```
-reddit             → [reddit]
-social             → [postiz, facebook-ads?]
-seo                → [claude-seo]
-content-wix        → [wix]
-content-ghost      → [ghost, resend?]
-content-wordpress  → [wordpress, resend?]
-email              → [resend]
-revenue            → [stripe, hubspot]   -- order matters for identity-resolution
-crm                → [hubspot]
-youtube            → [youtube]
+reddit             → [required: reddit]
+social             → [required: postiz] [optional: facebook-ads]
+seo                → [required: claude-seo]
+content-wix        → [required: wix]
+content-ghost      → [required: ghost] [optional: resend]
+content-wordpress  → [required: wordpress] [optional: resend]
+email              → [required: resend]
+revenue            → [required: stripe, hubspot]  (order matters — stripe first for identity-resolution)
+crm                → [required: hubspot]
+youtube            → [required: youtube]
 ```
 
 For each recipe in the bundle:
@@ -53,11 +53,13 @@ For each recipe in the bundle:
 3. After each recipe completes, return here and do the next one.
 4. If a recipe fails validation, ask: "`<recipe>` didn't validate. Stop the bundle and fix, or continue with remaining recipes?" Default: stop.
 
-**Optional recipes** (marked with `?` above) — ask inline:
+**Optional recipes** (marked `[optional]` in the bundle map) — ask inline:
 
 - `social` → "Install the Meta Ads MCP too? Only needed if running paid campaigns. (yes/no/skip)"
 - `content-ghost` → "Ghost handles newsletter sends natively. Install Resend too for transactional email and other lifecycle emails? (yes/no/skip)"
 - `content-wordpress` → "WordPress doesn't do newsletters natively. Install Resend for email broadcasts? (yes/no/skip)"
+
+**Dry-run** (`--plan`) — if the argument includes `--plan`, loop each required + (opted-in) optional recipe with `install_recipe.md` in plan mode. No changes written.
 
 ## Phase 4 — Seed the channel conventions file
 

@@ -1,10 +1,20 @@
 ---
 name: ga4
+tier: extension
 channel: analytics
 loop_fit: [acquisition, activation, monetization]
 primary_mcp_status: via-claude-seo
 requires_server_install: false
 requires_deploy: false
+depends_on: [claude-seo]
+detection:
+  type: derived
+  source_recipe: claude-seo
+validation:
+  type: shell
+  command: 'python ~/.claude/skills/seo-google/scripts/google_auth.py --check --json 2>&1 | grep -i ga4 || echo "GA4_NOT_AVAILABLE"'
+  expect:
+    not_contains: "GA4_NOT_AVAILABLE"
 ---
 
 # Google Analytics 4 (GA4 Data API)

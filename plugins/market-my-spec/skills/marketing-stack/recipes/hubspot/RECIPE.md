@@ -1,10 +1,20 @@
 ---
 name: hubspot
+tier: core
 channel: crm
 loop_fit: [acquisition, activation, retention]
 primary_mcp_status: community-active
 requires_server_install: false
 requires_deploy: false
+detection:
+  type: mcp
+  args_contains: ["hubspot-mcp", "@hubspot"]
+  env_var: "HUBSPOT_PRIVATE_APP_TOKEN"
+validation:
+  type: shell
+  command: 'curl -s -H "Authorization: Bearer $HUBSPOT_PRIVATE_APP_TOKEN" "https://api.hubapi.com/crm/v3/objects/contacts?limit=1"'
+  expect:
+    contains: '"results"'
 ---
 
 # HubSpot

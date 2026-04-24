@@ -18,6 +18,7 @@ Read in parallel:
 
 - `marketing/activities.md` — current roster
 - `marketing/08_plan.md` + `marketing/07_channels.md` — strategy anchors
+- `marketing/infrastructure.md` if present — recipe state from `/marketing-stack`
 - Last 7-14 files in `marketing/daily/` — execution record. Use `ls marketing/daily/ | sort -r | head -14`.
 - Any analytics / metrics files the user keeps (grep `reports/`, `analytics*`, `knowledge/` in the project)
 
@@ -70,6 +71,7 @@ From the strategy + last 14 days of daily files, look for:
 - **Implicit activities.** Things the user has been doing ad-hoc (visible in daily file logs, but not in the roster). Candidates for promotion to the roster.
 - **Skill presence without activity.** Skills that show up in the hook log but aren't tied to any roster row. Usually fine — the user was exploring. But flag if a skill has been used 3+ times and isn't on the roster.
 - **User-global / plugin skills sitting unused.** From the broader skill-usage data, surface any `~/.claude/skills/<x>` or plugin skill that has zero uses in 30+ days. **Do not propose to archive these** — just report them so the user can decide to uninstall or manually clean up. They're infrastructure, not our scope.
+- **Infrastructure gaps.** If `marketing/infrastructure.md` exists: any recipe with `fit: required` + `state: absent/partial/broken`. Surface these as blockers on the roster activities that depend on them. Recommend running `/marketing-stack` to address. (We do not install from inside review — point at the right skill.)
 
 ## Phase 5 — Present findings
 

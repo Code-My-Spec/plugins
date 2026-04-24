@@ -1,8 +1,8 @@
 ---
 name: marketing-stack
-description: Set up the marketing infrastructure your strategy calls for — MCPs, API credentials, plugin dependencies, minimal conventions — so the skills you use daily actually have something to run against. Reads marketing/07_channels.md to know which channels matter, then installs recipes per channel (Reddit, Wix, Ghost, WordPress, Stripe, HubSpot, claude-seo, Postiz, Meta Ads, etc.). MCP-first, .env-only secrets, reversible installs. Use when starting a new project, onboarding a new channel, or re-wiring infrastructure after a strategy shift. Also use to regenerate `marketing/infrastructure.md` — the source of truth for what's wired up.
+description: Set up the marketing infrastructure your strategy calls for — MCPs, API credentials, plugin dependencies, minimal conventions — so the skills you use daily actually have something to run against. Reads marketing/07_channels.md to know which channels matter, then installs recipes per channel (Reddit, Wix, Ghost, WordPress, Stripe, HubSpot, claude-seo, Postiz, Meta Ads, etc.). MCP-first, .env-only secrets, reversible installs, dry-run supported. Use when starting a new project, onboarding a new channel, or re-wiring infrastructure after a strategy shift. Also use to regenerate `marketing/infrastructure.md` — the source of truth for what's wired up.
 user-invocable: true
-argument-hint: [install <recipe> | install-for-channel <channel> | fix <recipe> | blueprint]
+argument-hint: [install <recipe> [--plan] | install-for-channel <channel> [--plan] | fix <recipe> | blueprint | --all]
 ---
 
 # Marketing Stack
@@ -22,9 +22,12 @@ Infrastructure setup for a strategy-owning founder. Sits between `/marketing-str
 
 | Invocation | Mode | Step file |
 |---|---|---|
-| `/marketing-stack` | Inventory: what's installed vs what strategy needs | `steps/inventory.md` |
+| `/marketing-stack` | Inventory (core tier only) — what's installed vs what strategy needs | `steps/inventory.md` |
+| `/marketing-stack --all` | Inventory (all tiers, including extensions) | `steps/inventory.md` |
 | `/marketing-stack install <recipe>` | Guided install for one recipe | `steps/install_recipe.md` |
+| `/marketing-stack install <recipe> --plan` | **Dry-run:** show what would happen without changing anything | `steps/install_recipe.md` |
 | `/marketing-stack install-for-channel <channel>` | Bundle install: all recipes for a channel + minimal conventions | `steps/install_for_channel.md` |
+| `/marketing-stack install-for-channel <channel> --plan` | Dry-run for bundle install | `steps/install_for_channel.md` |
 | `/marketing-stack fix <recipe>` | Diagnose a broken/expired install + re-auth | `steps/fix_recipe.md` |
 | `/marketing-stack blueprint` | Regenerate `marketing/infrastructure.md` | `steps/blueprint.md` |
 
@@ -48,27 +51,37 @@ Greet briefly — one sentence confirming mode — and load the matching step fi
 
 Each recipe lives at `recipes/<name>/RECIPE.md`. First read is on demand, not upfront. When a user says `install <name>` or `install-for-channel <channel>`, load the relevant recipe(s).
 
-**V1 recipe inventory (17):**
+Recipes are organized by **tier**:
 
-| Recipe | Channel(s) | MCP status |
+- **Core (8):** recipes most solo founders will use. Surfaced in default inventory.
+- **Extensions (9):** installable on demand but not listed in default inventory unless `--all` is used.
+
+**Core tier:**
+
+| Recipe | Channel(s) | Integration |
 |---|---|---|
-| `wix` | Wix CMS + CRM + store | ✅ Official Wix native connector in Claude |
-| `ghost` | Ghost CMS + newsletter + memberships | ✅ `@fanyangmeng/ghost-mcp` |
-| `wordpress` | WordPress CMS + WooCommerce | ✅ `WordPress/mcp-adapter` (server) + `@automattic/mcp-wordpress-remote` (client) |
-| `reddit` | Reddit | ✅ `reddit-mcp-buddy` (karanb192) |
-| `stripe` | Revenue intelligence (read) | ✅ Official `stripe/agent-toolkit` MCP |
-| `hubspot` | CRM (read + write) | ✅ Community MCP + Private App token |
-| `claude-seo` | SEO toolkit (audits, GSC, GA4, technical, schema, content) | ✅ Full plugin w/ bundled DataForSEO / Firecrawl / nanobanana MCPs |
-| `postiz` | Social publishing hub (FB, IG, LinkedIn, X, YouTube, Reddit, TikTok, etc.) | ✅ Bundled MCP in postiz-app repo; requires deploy |
-| `facebook-ads` | Meta Ads (Facebook + Instagram ads) | ✅ `brijr/meta-mcp` or `pipeboard-co/meta-ads-mcp` |
-| `facebook-publish` | Facebook Page organic publishing | Routes through `postiz` (no separate install) |
-| `instagram` | Instagram Business publishing + insights | Routes through `postiz` for publishing; Meta Graph direct via facebook-ads' app for insights |
+| `wix` | Wix CMS + CRM + store | Official Wix remote MCP (HTTP transport) |
+| `ghost` | Ghost CMS + newsletter + memberships | `@fanyangmeng/ghost-mcp` |
+| `wordpress` | WordPress CMS + WooCommerce | `WordPress/mcp-adapter` (server) + `@automattic/mcp-wordpress-remote` (client) |
+| `reddit` | Reddit | `reddit-mcp-buddy` (karanb192) |
+| `stripe` | Revenue intelligence (read) | Official `stripe/agent-toolkit` MCP |
+| `hubspot` | CRM (read + write) | Community MCP + Private App token |
+| `claude-seo` | SEO toolkit (audits, GSC, GA4, technical, schema, content) | Full plugin w/ bundled DataForSEO / Firecrawl / nanobanana MCPs |
+| `resend` | Email broadcast + transactional | ⚠️ Direct REST via Bash (Claude Code only) |
+
+**Extensions (install on demand):**
+
+| Recipe | Channel(s) | Integration |
+|---|---|---|
+| `postiz` | Social publishing hub (FB, IG, LinkedIn, X, YouTube, Reddit, TikTok, etc.) | Bundled MCP in postiz-app repo; requires deploy |
+| `facebook-ads` | Meta Ads (Facebook + Instagram ads) | `brijr/meta-mcp` or `pipeboard-co/meta-ads-mcp` |
+| `facebook-publish` | Facebook Page organic publishing | Routes through `postiz` |
+| `instagram` | Instagram Business publishing + insights | Routes through `postiz`; Meta Graph direct via facebook-ads' app for insights |
 | `linkedin` | LinkedIn personal + Company Page | Routes through `postiz` (direct is ⚠️ Bash-only fallback) |
-| `twitter-x` | Twitter/X | Routes through `postiz` (direct is ⚠️ Bash + $200/mo) |
-| `youtube` | YouTube publishing + research | ⚠️ Data API direct via Bash (Claude Code only); video-use as local Chromium tool |
-| `gsc` | Google Search Console | Covered by `claude-seo`'s `seo-google` sub-skill; ⚠️ direct wrapper otherwise |
-| `ga4` | Google Analytics 4 | Same — covered by `claude-seo` |
-| `resend` | Email broadcast + transactional | ⚠️ Bash + REST (user decision: no custom MCP) |
+| `twitter-x` | Twitter/X | Routes through `postiz` (direct is ⚠️ Bash + paid tier) |
+| `youtube` | YouTube publishing + research | ⚠️ Data API direct via Bash (Claude Code only) |
+| `gsc` | Google Search Console | Covered by `claude-seo`; standalone ⚠️ custom wrapper otherwise |
+| `ga4` | Google Analytics 4 | Covered by `claude-seo`; standalone ⚠️ custom wrapper otherwise |
 
 ## Channel → recipe bundles
 
@@ -102,45 +115,36 @@ For a new project with a complete strategy, recommended cold-start order:
 
 The `inventory` mode surfaces this order dynamically based on which recipes the user's strategy actually calls for.
 
+## Status model
+
+Each recipe has two orthogonal dimensions:
+
+**State** (derived from detection + validation):
+- `ready` — MCP registered, creds present, validation passed
+- `partial` — MCP registered but creds missing OR validation not yet run
+- `broken` — was ready, now failing (expired creds, MCP unreachable)
+- `absent` — not installed
+
+**Fit** (derived from strategy):
+- `required` — strategy explicitly calls for this channel
+- `nice-to-have` — complements the strategy but not explicit
+- `out-of-scope` — strategy rules out this channel
+
+The product of the two is what inventory surfaces:
+- `absent` + `required` → install next
+- `broken` + `required` → fix now
+- `partial` + `required` → finish setup
+- `ready` + `out-of-scope` → candidate to uninstall (surface, don't act)
+
 ## The blueprint file — `marketing/infrastructure.md`
 
-Source of truth for what's wired up. Written and regenerated by the `blueprint` mode. Structure:
+Source of truth for what's wired up. Written and regenerated by the `blueprint` mode.
 
-```markdown
-# Infrastructure
-
-Updated: YYYY-MM-DD
-
-## Status summary
-- Ready: N recipes
-- Setup-pending: M recipes (auth needed / partial install)
-- Not installed: K recipes (strategy-called but not set up)
-- Blocked: L recipes (credentials expired or MCP unreachable)
-
-## Recipes
-
-| Recipe | MCP / integration | Status | Last verified | Notes |
-|---|---|---|---|---|
-| wix | Official Wix native connector | ready | 2026-04-22 | Connected via Claude connector settings |
-| ghost | @fanyangmeng/ghost-mcp (stdio) | ready | 2026-04-22 | Admin API key in .env, key rotates: 2027-04 |
-| ... |
-
-## Conventions
-- marketing/conventions/reddit.md
-- marketing/conventions/social.md
-- ...
-
-## Credential-sharing map
-(Generated live — what creds are shared across recipes.)
-
-## Open issues
-- facebook-ads: App Review pending (est. 2026-05-05)
-- wordpress: mcp-adapter plugin not installed on site yet — last attempt 2026-04-20
-```
+The blueprint lists each recipe with its tier, state, fit, and a brief notes column. Status summary counts are grouped by the state × fit matrix. See `steps/blueprint.md` for the full template.
 
 ## Integration with `/daily-plan`
 
-`/daily-plan` reads `marketing/infrastructure.md` when picking activities. An activity whose recipe is `ready` is runnable; `setup-pending` or `blocked` means daily-plan surfaces "run `/marketing-stack fix <recipe>`" instead of picking it.
+`/daily-plan` reads `marketing/infrastructure.md` and the per-recipe state when picking activities. An activity whose recipe is `state: ready` is runnable; `partial` or `broken` means daily-plan surfaces "run `/marketing-stack fix <recipe>`" instead of picking the activity.
 
 Activities in `marketing/activities.md` gain an optional **Infrastructure** column listing the recipes they depend on:
 
@@ -150,7 +154,7 @@ Activities in `marketing/activities.md` gain an optional **Infrastructure** colu
 | Publish weekly post | `/draft-content` → Ghost | `ghost` | Acquisition |
 | CRO audit | `/page-cro` → `/seo-page` | `claude-seo`, `ga4` | Activation |
 
-The `blueprint` mode can optionally update activities.md's infrastructure column, filling in any gaps.
+This integration is wired in `/daily-plan`'s `steps/daily.md` (Phase 1.5 — Infrastructure check). The `blueprint` mode here updates `infrastructure.md`; daily-plan reads it.
 
 ## Anti-patterns
 
