@@ -62,11 +62,10 @@ Default (core tier only) output:
 - Middle-ring tests: Elixir Forum, LinkedIn (manual)
 - Ruled out (from 07_channels.md): Facebook Ads, TikTok
 
-## Core tier (8 recipes)
+## Core tier (7 recipes)
 
 | Recipe | State | Fit | Next action |
 |---|---|---|---|
-| claude-seo | ready | required | — |
 | reddit | ready | required | — |
 | ghost | partial | required | `/marketing-stack fix ghost` — admin key missing |
 | stripe | absent | required | `/marketing-stack install stripe` |
@@ -74,6 +73,9 @@ Default (core tier only) output:
 | wordpress | absent | out-of-scope | — |
 | wix | absent | out-of-scope | — |
 | resend | ready | required | — |
+
+## Playbook plugins (managed by /marketing-library)
+This skill does not own plugin install. Run `/marketing-library` to inventory plugins like claude-seo, marketingskills.
 
 ## Extensions (not shown — run `/marketing-stack --all` to see)
 ```

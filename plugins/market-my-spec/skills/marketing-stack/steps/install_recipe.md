@@ -74,7 +74,7 @@ If the recipe file exists, read it. Recipes are structured markdown with:
 
 Before touching anything, read the Prerequisites section and verify each:
 
-- **Credential dependencies.** E.g., `claude-seo` needs a GCP project. Check if one exists (look for `~/.config/claude-seo/google-api.json`); if not, halt and ask user to complete the prerequisite first.
+- **Credential dependencies.** E.g., a recipe might depend on the GCP service account configured by the claude-seo plugin (`~/.config/claude-seo/google-api.json`). If absent, point the user at `/marketing-library install claude-seo` first.
 - **Plugin/MCP dependencies.** E.g., `facebook-publish` routes through Postiz — check if `postiz` is already `ready`. If not: "facebook-publish routes through postiz. Install postiz first with `/marketing-stack install postiz`, or continue with a direct-API setup (not recommended for v1)?"
 - **Server-side prerequisites.** E.g., `wordpress` needs mcp-adapter plugin installed on the WP site. Ask: "Have you installed the mcp-adapter plugin on your WordPress site? (yes/no/not yet)." If no/not-yet, show the user the install URL and how-to, wait for confirmation.
 

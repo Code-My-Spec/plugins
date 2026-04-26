@@ -21,7 +21,7 @@ validation:
 ## What it is
 Two distinct integrations, different activities:
 
-- **Publishing + own-channel analytics:** YouTube Data API v3 + YouTube Analytics API — ⚠️ Claude Code only (Bash + curl). Covered by `claude-seo`'s Google Cloud foundation if installed.
+- **Publishing + own-channel analytics:** YouTube Data API v3 + YouTube Analytics API — ⚠️ Claude Code only (Bash + curl). Reuses the Google Cloud project + service account from the `claude-seo` plugin (installed via `/marketing-library`) if available.
 - **Content research / competitor intel / transcripts:** `browser-use/video-use` — Playwright-based agentic browser. Not an MCP. Requires local Chromium + an LLM API key.
 
 No good YouTube MCP published as of April 2026. Direct Data API works; video-use runs separately for research.
@@ -31,14 +31,14 @@ No good YouTube MCP published as of April 2026. Direct Data API works; video-use
 
 ## Prerequisites
 - A YouTube channel with a linked Google account
-- Access to the same Google Cloud project used by `claude-seo` (shares the service account + API key)
+- Access to the same Google Cloud project used by the claude-seo plugin (shares the service account + API key) — install claude-seo via `/marketing-library install claude-seo` first if you haven't
 - For video-use: local Chromium, an LLM API key (Anthropic or OpenAI)
 
 ## Install steps
 
 ### Data API v3 (publishing + own-channel analytics)
 
-1. GCP Console → APIs & Services → Library → enable **YouTube Data API v3** and **YouTube Analytics API** in the same project as claude-seo.
+1. GCP Console → APIs & Services → Library → enable **YouTube Data API v3** and **YouTube Analytics API** in the same project the claude-seo plugin uses.
 2. OAuth consent: External, add your email as test user (avoids verification gate for personal use).
 3. Credentials → Create OAuth 2.0 Client ID → **Desktop app** type.
 4. Run a local OAuth flow once (Google's `oauth2l` or a Python script) to obtain a refresh token.

@@ -3,8 +3,9 @@
 Use Claude Code as your marketing strategist, then as your daily operator.
 
 - `/marketing-strategy` — guided 8-step strategy flow. Interviews you, dispatches research agents, produces positioning, messaging, channels, and a 90-day plan.
-- `/daily-plan` — picks today's 1-3 marketing activities from your strategy, points you at the skills that execute them, and keeps your activity roster honest (weekly review, gap detection, project-local skill scaffolding, archival of dead activities).
-- `/marketing-stack` — sets up the marketing infrastructure your strategy calls for (MCPs, API credentials, plugin dependencies, minimal conventions). Recipe-based, MCP-first, `.env`-only secrets. 17 recipes covering Reddit, Wix, Ghost, WordPress, Stripe, HubSpot, claude-seo, GSC, GA4, Postiz, Meta Ads, Facebook, Instagram, LinkedIn, Twitter/X, YouTube, Resend.
+- `/daily-plan` — picks today's 1-3 marketing activities from your strategy, points you at the skills that execute them, and keeps your activity roster honest (weekly review, gap detection, project-local skill scaffolding, archival of dead activities). Reads `marketing/infrastructure.md` to gate activities on recipe + plugin readiness.
+- `/marketing-stack` — sets up standalone marketing infrastructure your strategy needs (single MCPs, API credentials, conventions). Recipe-based, MCP-first, `.env`-only secrets. 14 recipes covering Reddit, Wix, Ghost, WordPress, Stripe, HubSpot, Postiz, Meta Ads, Facebook, Instagram, LinkedIn, Twitter/X, YouTube, Resend.
+- `/marketing-library` — curates Claude Code plugins that ship marketing playbook skills. 4 curated plugins: marketingskills, claude-seo, anthropic-marketing, digital-marketing-pro. Strategy-aligned recommendations, plugin-bundled auth setup (e.g., claude-seo's GCP config), unused-skill audit.
 
 Industry-agnostic — works for software founders, consultants, trades, services, and B2C operators.
 
@@ -20,10 +21,12 @@ From a Claude Code session:
 ## The flow
 
 1. **Strategy first** — `/marketing-strategy`. Full 8-step flow on first run; iteration mode on later runs. Produces `marketing/01_current_state.md` through `marketing/08_plan.md`.
-2. **Infrastructure setup** — `/marketing-stack`. Reads the strategy, installs the recipes its channels call for (Reddit, Ghost, Stripe, HubSpot, etc.). `.env`-only secrets, reversible installs. Writes `marketing/infrastructure.md` as the source of truth for what's wired up.
-3. **Daily execution** — `/daily-plan`. Reads the strategy + infrastructure + activity roster; picks today's 1-3 activities; logs to `marketing/daily/YYYY-MM-DD.md`.
-4. **Weekly re-tune** — `/daily-plan review`. Hit-rate analysis, loop-shift check, roster adjustments.
-5. **As needed** — `/daily-plan add <name>` to scaffold a new activity, `/daily-plan archive <name>` to bench an unused one, `/marketing-stack install <recipe>` when a new channel goes live, `/marketing-stack fix <recipe>` when an integration breaks.
+2. **Library** — `/marketing-library`. Recommends + installs curated playbook plugins (marketingskills, claude-seo, etc.). The plugins bundle skills + their own auth/config conventions.
+3. **Infrastructure** — `/marketing-stack`. Installs standalone MCPs the strategy calls for (Reddit, Ghost, Stripe, etc.). `.env`-only secrets, reversible installs.
+4. **Both `/marketing-library` and `/marketing-stack` write to `marketing/infrastructure.md`** in separate sections. Daily-plan reads it as one source of truth for what's wired up.
+5. **Daily execution** — `/daily-plan`. Reads strategy + infrastructure + activity roster; picks today's 1-3 activities; logs to `marketing/daily/YYYY-MM-DD.md`. Skips activities whose recipes or plugins aren't `state: ready`.
+6. **Weekly re-tune** — `/daily-plan review`. Hit-rate analysis, loop-shift check, roster adjustments, infrastructure gap surfacing.
+7. **As needed** — `/daily-plan add <name>` to scaffold a new activity, `/daily-plan archive <name>` to bench an unused one, `/marketing-stack install <recipe>` when a new standalone integration goes live, `/marketing-stack fix <recipe>` when one breaks, `/marketing-library install <plugin>` when adding a playbook plugin, `/marketing-library audit` to surface unused playbook skills.
 
 ## The 8 steps
 

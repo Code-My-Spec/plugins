@@ -36,7 +36,7 @@ Bundle map (from `SKILL.md`). `[required]` recipes install by default; `[optiona
 ```
 reddit             → [required: reddit]
 social             → [required: postiz] [optional: facebook-ads]
-seo                → [required: claude-seo]
+seo                → DELEGATE: /marketing-library install claude-seo
 content-wix        → [required: wix]
 content-ghost      → [required: ghost] [optional: resend]
 content-wordpress  → [required: wordpress] [optional: resend]
@@ -45,6 +45,8 @@ revenue            → [required: stripe, hubspot]  (order matters — stripe fi
 crm                → [required: hubspot]
 youtube            → [required: youtube]
 ```
+
+For the `seo` channel, this skill does NOT install. Instead, instruct the user to run `/marketing-library install claude-seo` and seed the conventions file once the plugin is installed.
 
 For each recipe in the bundle:
 

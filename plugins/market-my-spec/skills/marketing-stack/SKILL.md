@@ -53,8 +53,8 @@ Each recipe lives at `recipes/<name>/RECIPE.md`. First read is on demand, not up
 
 Recipes are organized by **tier**:
 
-- **Core (8):** recipes most solo founders will use. Surfaced in default inventory.
-- **Extensions (9):** installable on demand but not listed in default inventory unless `--all` is used.
+- **Core (7):** recipes most solo founders will use. Surfaced in default inventory.
+- **Extensions (7):** installable on demand but not listed in default inventory unless `--all` is used.
 
 **Core tier:**
 
@@ -66,7 +66,6 @@ Recipes are organized by **tier**:
 | `reddit` | Reddit | `reddit-mcp-buddy` (karanb192) |
 | `stripe` | Revenue intelligence (read) | Official `stripe/agent-toolkit` MCP |
 | `hubspot` | CRM (read + write) | Community MCP + Private App token |
-| `claude-seo` | SEO toolkit (audits, GSC, GA4, technical, schema, content) | Full plugin w/ bundled DataForSEO / Firecrawl / nanobanana MCPs |
 | `resend` | Email broadcast + transactional | ⚠️ Direct REST via Bash (Claude Code only) |
 
 **Extensions (install on demand):**
@@ -80,8 +79,8 @@ Recipes are organized by **tier**:
 | `linkedin` | LinkedIn personal + Company Page | Routes through `postiz` (direct is ⚠️ Bash-only fallback) |
 | `twitter-x` | Twitter/X | Routes through `postiz` (direct is ⚠️ Bash + paid tier) |
 | `youtube` | YouTube publishing + research | ⚠️ Data API direct via Bash (Claude Code only) |
-| `gsc` | Google Search Console | Covered by `claude-seo`; standalone ⚠️ custom wrapper otherwise |
-| `ga4` | Google Analytics 4 | Covered by `claude-seo`; standalone ⚠️ custom wrapper otherwise |
+
+**Note on SEO toolkit (claude-seo, GSC, GA4):** These are bundled in the `claude-seo` plugin and managed by `/marketing-library install claude-seo`, not by this skill. The plugin install brings the skills + Python scripts + bundled MCP extensions and handles the GCP service-account setup. `/marketing-library` writes its inventory to the same `marketing/infrastructure.md` file, in a separate "Playbook plugins" section.
 
 ## Channel → recipe bundles
 
@@ -91,7 +90,7 @@ When the user runs `install-for-channel <channel>`, install the recipe set below
 |---|---|---|
 | `reddit` | `reddit` | `marketing/conventions/reddit.md` |
 | `social` | `postiz` → optional `facebook-ads` | `marketing/conventions/social.md` |
-| `seo` | `claude-seo` (bundles GSC + GA4 support) | `marketing/conventions/seo.md` |
+| `seo` | (delegate to `/marketing-library install claude-seo`) | `marketing/conventions/seo.md` |
 | `content-wix` | `wix` | `marketing/conventions/content.md` |
 | `content-ghost` | `ghost` → optional `resend` | `marketing/conventions/content.md` |
 | `content-wordpress` | `wordpress` → optional `resend` | `marketing/conventions/content.md` |
@@ -104,7 +103,7 @@ When the user runs `install-for-channel <channel>`, install the recipe set below
 
 For a new project with a complete strategy, recommended cold-start order:
 
-1. **Google Cloud foundation** (covers GSC + GA4 + YouTube + PageSpeed + CrUX): install `claude-seo`, run its credential setup. One GCP project + service account + API key handles 5 later integrations.
+1. **SEO + analytics foundation:** `/marketing-library install claude-seo` (managed in the library, not here). The plugin sets up the GCP project + service account + API key that covers GSC + GA4 + YouTube + PageSpeed + CrUX.
 2. **Primary CMS (pick one):** `wix` OR `ghost` OR `wordpress`. Warn if more than one, but allow (agencies legitimately run multiple).
 3. **Social publishing hub:** `postiz` deploy → local or BYO URL. Once deployed, Postiz holds OAuth for FB/IG/LinkedIn/X/YouTube/Reddit/TikTok publishing.
 4. **Meta app (one-time):** only if running Meta Ads OR if postiz deploy isn't happening yet. Covers `facebook-ads` + `instagram` + direct Graph fallback.

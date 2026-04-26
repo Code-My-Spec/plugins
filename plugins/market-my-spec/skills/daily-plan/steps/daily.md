@@ -34,13 +34,14 @@ Wait for the answer. Don't pile on questions.
 
 ## Phase 1.5 — Infrastructure check
 
-If `marketing/infrastructure.md` exists, build a runnable-set:
+If `marketing/infrastructure.md` exists, build a runnable-set from BOTH sections:
 
-1. Parse the Recipes tables in `infrastructure.md`. For each recipe, extract its `state` column (`ready` | `partial` | `broken` | `absent`).
-2. Parse `marketing/activities.md`. For each activity row, check its Infrastructure column (if present). The activity is **runnable** iff every listed recipe is `state: ready`.
-3. Build the lookup: `{activity_name → runnable: bool, blocking_recipes: [<name>]}`.
+1. Parse the **`## Recipes`** sections (managed by `/marketing-stack`). For each recipe row, extract its `state` column (`ready` | `partial` | `broken` | `absent`).
+2. Parse the **`## Playbook plugins`** section (managed by `/marketing-library`). For each plugin row, extract its `state`.
+3. Parse `marketing/activities.md`. For each activity, check its Infrastructure column (if present). The activity is **runnable** iff every listed recipe AND plugin in the column is `state: ready`.
+4. Build the lookup: `{activity_name → runnable: bool, blocking: [{name, kind, state}]}`. `kind` is `recipe` or `plugin`.
 
-If `marketing/infrastructure.md` does NOT exist: skip Phase 1.5. All activities are treated as runnable (legacy behavior, same as pre-integration). Note in the daily file: "Infrastructure unknown (no `marketing/infrastructure.md`) — run `/marketing-stack blueprint` to enable gating."
+If `marketing/infrastructure.md` does NOT exist: skip Phase 1.5. All activities are treated as runnable (legacy behavior, same as pre-integration). Note in the daily file: "Infrastructure unknown (no `marketing/infrastructure.md`) — run `/marketing-stack blueprint` and `/marketing-library blueprint` to enable gating."
 
 ## Phase 2 — Loop-shift check
 
@@ -71,9 +72,9 @@ If they push through, note it in the daily file and continue. If they switch to 
 - **Max 3 activities.** If you can't narrow down, ask the user to break the tie.
 - **Skip `gap` and `archived` activities.** A gap can't be picked — if a gap activity is the only one due, surface it: "Today's clear choice is [activity] but it's a gap. Want to scaffold it now with `/daily-plan add <name>`?"
 - **Skip `dormant` activities unless the user explicitly wants to revive one.** Dormant = intentionally benched.
-- **Skip infrastructure-blocked activities.** If Phase 1.5 flagged an activity as not-runnable (blocking recipe not `ready`), surface it but don't pick it:
-  > "Today's clear choice is [activity] but [recipe] is `state: <state>`. Run `/marketing-stack fix <recipe>` first, or pick the next-highest activity."
-  If ALL top candidates are infrastructure-blocked, recommend the `/marketing-stack fix` path for the most-blocking recipe before doing anything else today.
+- **Skip infrastructure-blocked activities.** If Phase 1.5 flagged an activity as not-runnable, surface it but don't pick it:
+  > "Today's clear choice is [activity] but [name] (kind: <recipe|plugin>) is `state: <state>`. Run `/marketing-stack fix <recipe>` (or `/marketing-library install <plugin>`) first, or pick the next-highest activity."
+  If ALL top candidates are infrastructure-blocked, recommend the appropriate fix/install path for the most-blocking item before doing anything else today.
 
 **Ad-hoc mode (`/daily-plan run <name>`):**
 
