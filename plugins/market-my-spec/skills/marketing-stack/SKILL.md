@@ -79,6 +79,8 @@ Recipes are organized by **tier**:
 | `linkedin` | LinkedIn personal + Company Page | Routes through `postiz` (direct is ⚠️ Bash-only fallback) |
 | `twitter-x` | Twitter/X | Routes through `postiz` (direct is ⚠️ Bash + paid tier) |
 | `youtube` | YouTube publishing + research | ⚠️ Data API direct via Bash (Claude Code only) |
+| `discord` | Discord community + bot | `mcp-discord` (barryyip0625); webhook fallback for announce-only |
+| `slack` | Slack workspace community + search | `korotovsky/slack-mcp-server`; read-only by default |
 
 **Note on SEO toolkit (claude-seo, GSC, GA4):** These are bundled in the `claude-seo` plugin and managed by `/marketing-library install claude-seo`, not by this skill. The plugin install brings the skills + Python scripts + bundled MCP extensions and handles the GCP service-account setup. `/marketing-library` writes its inventory to the same `marketing/infrastructure.md` file, in a separate "Playbook plugins" section.
 
@@ -98,6 +100,8 @@ When the user runs `install-for-channel <channel>`, install the recipe set below
 | `revenue` | `stripe` → `hubspot` (install in this order for identity-resolution metadata pattern) | `marketing/conventions/revenue.md` |
 | `crm` | `hubspot` | `marketing/conventions/crm.md` |
 | `youtube` | `youtube` | `marketing/conventions/youtube.md` |
+| `discord` | `discord` | `marketing/conventions/discord.md` |
+| `slack` | `slack` | `marketing/conventions/slack.md` |
 
 ## Install order (cold-start across the stack)
 
