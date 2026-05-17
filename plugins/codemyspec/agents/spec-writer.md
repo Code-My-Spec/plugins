@@ -1,7 +1,12 @@
 ---
 name: spec-writer
 description: Creates component and context specifications from prompt files
-tools: Read, Write, Glob, Grep, mcp__plugin_codemyspec_local__start_task, mcp__plugin_codemyspec_local__evaluate_task
+tools: >-
+  Read, Write, Glob, Grep,
+  mcp__plugin_codemyspec_local__start_task,
+  mcp__plugin_codemyspec_local__evaluate_task,
+  mcp__plugin_codemyspec_*
+mcpServers: local
 model: sonnet
 color: cyan
 ---

@@ -1,26 +1,38 @@
 #!/bin/bash
 # Route Claude Code hooks to the local cms server.
 # Reads JSON from stdin, POSTs to the matching /api/hooks/* endpoint.
-# On SessionStart, ensures the server is running (via `cms start`).
+# On SessionStart, ensures the server is running (via `cms start`) when
+# pointed at the prod port; the in-repo dev plugin defaults to 4003 and
+# expects you to run `mix phx.server` yourself.
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 STDIN_DATA=$(cat)
 
+# Default port is rewritten by the release packager when shipping the
+# published plugin. CODEMYSPEC_PORT overrides for ad-hoc setups.
+PORT="${CODEMYSPEC_PORT:-4003}"
+
 EVENT=$(echo "$STDIN_DATA" | grep -o '"hook_event_name":"[^"]*"' | cut -d'"' -f4)
 
 case "$EVENT" in
-  SessionStart)  ENDPOINT="/api/hooks/session-start" ;;
-  PreToolUse)    ENDPOINT="/api/hooks/pre-tool-use" ;;
-  PostToolUse)   ENDPOINT="/api/hooks/post-tool-use" ;;
-  Stop)          ENDPOINT="/api/hooks/stop" ;;
-  *)             exit 0 ;;
+  SessionStart)   ENDPOINT="/api/hooks/session-start" ;;
+  PreToolUse)     ENDPOINT="/api/hooks/pre-tool-use" ;;
+  PostToolUse)    ENDPOINT="/api/hooks/post-tool-use" ;;
+  Stop)           ENDPOINT="/api/hooks/stop" ;;
+  SubagentStart)  ENDPOINT="/api/hooks/subagent-start" ;;
+  SubagentStop)   ENDPOINT="/api/hooks/subagent-stop" ;;
+  *)              exit 0 ;;
 esac
 
 PLUGIN_ROOT="$(cd "$SCRIPT_DIR/../.." && pwd)"
 CMS_BIN="$HOME/.codemyspec/bin/cms"
 [ ! -x "$CMS_BIN" ] && [ -x "$PLUGIN_ROOT/bin/cms" ] && CMS_BIN="$PLUGIN_ROOT/bin/cms"
 
-if [ "$EVENT" = "SessionStart" ]; then
+# Only manage the burrito binary when this plugin is pointed at the
+# prod port. On any other port we assume the developer is running
+# `mix phx.server` themselves and would not appreciate a second
+# server fighting for 4003 in the background.
+if [ "$EVENT" = "SessionStart" ] && [ "$PORT" = "4003" ]; then
   # Install / update the binary if needed. Foreground on first install;
   # background (fire-and-forget) once the binary exists.
   if [ ! -x "$CMS_BIN" ]; then
@@ -36,7 +48,7 @@ if [ "$EVENT" = "SessionStart" ]; then
   [ -x "$CMS_BIN" ] && "$CMS_BIN" start >/dev/null 2>&1
 fi
 
-curl -s -X POST "http://localhost:4003${ENDPOINT}" \
+curl -s -X POST "http://localhost:${PORT}${ENDPOINT}" \
   -H "Content-Type: application/json" \
   -H "X-Working-Dir: $(pwd)" \
   -d "$STDIN_DATA"

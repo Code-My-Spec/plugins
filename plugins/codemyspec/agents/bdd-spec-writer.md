@@ -1,7 +1,14 @@
 ---
 name: bdd-spec-writer
 description: Writes BDD specification files (Spex) for user stories
-tools: Read, Write, Glob, Grep, Bash, Bash(mix compile *), Bash(mix spex *), Bash(mix grep *), Bash(mix tail *)
+tools: >-
+  Read, Write, Glob, Grep,
+  Bash, Bash(mix compile *), Bash(mix spex *),
+  Bash(mix grep *), Bash(mix tail *),
+  mcp__plugin_codemyspec_local__start_task,
+  mcp__plugin_codemyspec_local__evaluate_task,
+  mcp__plugin_codemyspec_*
+mcpServers: local
 model: sonnet
 color: magenta
 ---

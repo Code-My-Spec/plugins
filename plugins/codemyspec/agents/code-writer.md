@@ -1,7 +1,27 @@
 ---
 name: code-writer
 description: Implements components following spec files and passing tests
-tools: Read, Write, Glob, Grep, Bash, Bash(mix test *), Bash(mix spex *), Bash(mix ecto.*), Bash(git stash *), mcp__vibium__browser_launch, mcp__vibium__browser_navigate, mcp__vibium__browser_click, mcp__vibium__browser_fill, mcp__vibium__browser_type, mcp__vibium__browser_screenshot, mcp__vibium__browser_find, mcp__vibium__browser_find_all, mcp__vibium__browser_get_text, mcp__vibium__browser_get_url, mcp__vibium__browser_get_html, mcp__vibium__browser_wait, mcp__vibium__browser_wait_for_text, mcp__vibium__browser_wait_for_url, mcp__vibium__browser_wait_for_load, mcp__vibium__browser_scroll, mcp__vibium__browser_hover, mcp__vibium__browser_press, mcp__vibium__browser_keys, mcp__vibium__browser_select, mcp__vibium__browser_is_visible, mcp__vibium__browser_is_checked, mcp__vibium__browser_is_enabled, mcp__vibium__browser_get_attribute, mcp__vibium__browser_get_value, mcp__vibium__browser_map, mcp__vibium__browser_a11y_tree, mcp__vibium__browser_quit, mcp__plugin_codemyspec_local__start_task, mcp__plugin_codemyspec_local__evaluate_task
+tools: >-
+  Read, Write, Glob, Grep,
+  Bash, Bash(mix test *), Bash(mix spex *), Bash(mix ecto.*),
+  Bash(git stash *),
+  mcp__vibium__browser_launch, mcp__vibium__browser_navigate,
+  mcp__vibium__browser_click, mcp__vibium__browser_fill,
+  mcp__vibium__browser_type, mcp__vibium__browser_screenshot,
+  mcp__vibium__browser_find, mcp__vibium__browser_find_all,
+  mcp__vibium__browser_get_text, mcp__vibium__browser_get_url,
+  mcp__vibium__browser_get_html, mcp__vibium__browser_wait,
+  mcp__vibium__browser_wait_for_text, mcp__vibium__browser_wait_for_url,
+  mcp__vibium__browser_wait_for_load, mcp__vibium__browser_scroll,
+  mcp__vibium__browser_hover, mcp__vibium__browser_press,
+  mcp__vibium__browser_keys, mcp__vibium__browser_select,
+  mcp__vibium__browser_is_visible, mcp__vibium__browser_is_checked,
+  mcp__vibium__browser_is_enabled, mcp__vibium__browser_get_attribute,
+  mcp__vibium__browser_get_value, mcp__vibium__browser_map,
+  mcp__vibium__browser_a11y_tree, mcp__vibium__browser_quit,
+  mcp__plugin_codemyspec_local__start_task,
+  mcp__plugin_codemyspec_local__evaluate_task,
+  mcp__plugin_codemyspec_*
 mcpServers: vibium, local
 model: sonnet
 color: yellow
