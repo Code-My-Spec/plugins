@@ -21,6 +21,12 @@ tools: >-
   mcp__vibium__browser_a11y_tree, mcp__vibium__browser_quit,
   mcp__plugin_codemyspec_local__start_task,
   mcp__plugin_codemyspec_local__evaluate_task,
+  mcp__plugin_codemyspec_local__resolve_issue,
+  mcp__plugin_codemyspec_local__dismiss_issue,
+  mcp__plugin_codemyspec_local__accept_issue,
+  mcp__plugin_codemyspec_local__get_issue,
+  mcp__plugin_codemyspec_local__list_issues,
+  mcp__plugin_codemyspec_local__create_issue,
   mcp__plugin_codemyspec_*
 mcpServers: vibium, local
 model: sonnet
