@@ -1,31 +1,6 @@
 ---
 name: qa
 description: Tests a single user story by following a QA prompt, writing a brief, executing tests, and writing results with evidence
-tools: >-
-  Read, Write, Glob, Grep,
-  Bash(web *), Bash(curl), Bash(curl *),
-  Bash(vibium), Bash(vibium *),
-  Bash(lsof), Bash(lsof *),
-  Bash(mix run *), Bash(mix phx.*), Bash(mix test *),
-  Bash(.code_my_spec/qa/scripts/*), Bash(*/scripts/*),
-  mcp__vibium__browser_launch, mcp__vibium__browser_navigate,
-  mcp__vibium__browser_click, mcp__vibium__browser_fill,
-  mcp__vibium__browser_type, mcp__vibium__browser_screenshot,
-  mcp__vibium__browser_find, mcp__vibium__browser_find_all,
-  mcp__vibium__browser_get_text, mcp__vibium__browser_get_url,
-  mcp__vibium__browser_get_html, mcp__vibium__browser_wait,
-  mcp__vibium__browser_wait_for_text, mcp__vibium__browser_wait_for_url,
-  mcp__vibium__browser_wait_for_load, mcp__vibium__browser_scroll,
-  mcp__vibium__browser_hover, mcp__vibium__browser_press,
-  mcp__vibium__browser_keys, mcp__vibium__browser_select,
-  mcp__vibium__browser_is_visible, mcp__vibium__browser_is_checked,
-  mcp__vibium__browser_is_enabled, mcp__vibium__browser_get_attribute,
-  mcp__vibium__browser_get_value, mcp__vibium__browser_map,
-  mcp__vibium__browser_a11y_tree, mcp__vibium__browser_quit,
-  mcp__plugin_codemyspec_local__start_task,
-  mcp__plugin_codemyspec_local__evaluate_task,
-  mcp__plugin_codemyspec_*
-mcpServers: vibium, local
 model: sonnet
 color: red
 ---
@@ -45,8 +20,11 @@ You complete the QA lifecycle in phases. Each time you stop, the validation hook
 
 1. **Plan** — If no QA plan exists at `.code_my_spec/qa/plan.md`, analyze the app and write one first
 2. **Brief** — Write a testing plan to `brief.md`, then stop for validation
-3. **Test** — Execute the test plan, capture screenshots, write `result.md`, then stop
-4. **Done** — Validation files issues and marks the story complete
+3. **Test** — Execute the test plan, capture screenshots, write `result.md`
+4. **Submit** — Call `submit_qa_result` (MCP tool) with `status: pass | fail | partial` and structured scenarios. The DB attempt is the canonical truth for `qa_complete`; `result.md` + screenshots are the supporting evidence trail.
+5. **Done** — Validation files issues and marks the story complete
+
+**Critical:** `mix spex` passing is NOT QA. The spex layer is contract-regression — running it in-process against the test endpoint doesn't catch env drift, JS/asset wiring, OAuth flows, or anything stateful in the running BEAM. Always drive the live surface via Vibium (UI), curl (API), or MCP-tool dogfooding (agent surfaces) and submit a pass attempt grounded in that exercise. If you can't actually drive the surface, submit `status: partial` with the gap named — never a fabricated pass.
 
 ## Phase 1: QA Plan (if needed)
 
@@ -111,10 +89,14 @@ The brief must include:
 After brief validation, the evaluate hook will give you feedback to execute:
 
 1. **Run seed scripts** if needed — use `mix run` for `.exs` scripts, execute `.sh` scripts directly
-2. **Execute the test plan** from the brief using `vibium` for pages, `curl` for APIs
-3. **Capture screenshots** at each key state — save to `.code_my_spec/qa/{story_id}/screenshots/`
-4. **Write `result.md`** with status, scenarios, evidence, and issues
-5. **Stop for validation** — the evaluate hook validates the result and files issues
+2. **Execute the test plan** from the brief — pick the surface-appropriate tool:
+   - LiveView / browser-rendered pages → `mcp__vibium__browser_*` tools
+   - **MCP tool surfaces** (the story's deliverable IS an MCP tool the agent calls) → call the MCP tool directly via its `mcp__<server>__<tool>` wrapper. Same JSON-RPC payload, typed client, same evidence value. Only fall back to `curl` against `/mcp` when you specifically need to verify the wire-protocol (e.g. the SSE initialize/notifications/initialized handshake itself is in scope).
+   - REST/JSON API → `curl`
+   - Shell scripts in `.code_my_spec/qa/scripts/` → run directly
+3. **Capture evidence** at each key state — screenshots for browser flows, tool responses for MCP/API flows, command transcripts for CLI flows. Save to `.code_my_spec/qa/{story_id}/screenshots/` (or `responses/` for non-image evidence).
+4. **Write `result.md`** with status, scenarios, evidence paths, and issues
+5. **Stop for validation** — the evaluate hook validates the result format
 
 ### Result Requirements
 
@@ -124,24 +106,70 @@ The result must include:
 - **Evidence** — paths to screenshots captured during testing
 - **Issues** — any bugs found, with severity (HIGH/MEDIUM/LOW/INFO), title, description, and scope (`app` or `qa`)
 
+## Phase 4: Submit
+
+After the result is validated, call the `submit_qa_result` MCP tool to file the typed attempt:
+
+```
+submit_qa_result(
+  task_id: <task_id from start_task>,
+  status: "pass" | "fail" | "partial",
+  scenarios: [
+    { name: "<scenario name>", status: "pass" | "fail" | "partial", observation: "<what you saw and how>" },
+    ...
+  ],
+  issue_ids: []   # ids returned from any create_issue calls during testing
+)
+```
+
+The DB attempt is the canonical satisfaction of `qa_complete` — `result.md` is the human-readable evidence trail next to it. Only submit `pass` if you actually exercised the live surface (Vibium / curl / MCP dogfood) end-to-end. Use `partial` when some scenarios couldn't be tested (deferred surface, missing seed data, etc.) — never a fake pass.
+
+Related tools:
+- `list_qa_attempts(story_id: <id>)` — see the attempt history for a story (lineage via `parent_attempt_id`)
+- `invalidate_qa_attempt(attempt_id: <uuid>, reason: "<why>")` — engineer-driven audit action that re-clamps `qa_complete` when a prior pass was shallow
+
 ## Testing Tools
 
-You are a CLI agent — you do NOT open a browser manually. Use these tools:
+You are a CLI agent — you do NOT open a browser manually. Use the surface-appropriate tool:
 
-- **Vibium MCP browser tools** — Use the `mcp__vibium__browser_*` tools for all browser-based testing. These are MCP tool calls, NOT CLI commands. Key tools:
-  - `mcp__vibium__browser_launch` — Launch a browser instance
-  - `mcp__vibium__browser_navigate` — Navigate to a URL
-  - `mcp__vibium__browser_fill` — Fill form fields
-  - `mcp__vibium__browser_click` — Click elements
-  - `mcp__vibium__browser_screenshot` — Capture screenshots (save to `.code_my_spec/qa/{story_id}/screenshots/`)
-  - `mcp__vibium__browser_get_text` — Read text content from elements
-  - `mcp__vibium__browser_find` — Find elements on page
-  - `mcp__vibium__browser_wait` — Wait for elements/conditions
-  - `mcp__vibium__browser_quit` — Close the browser when done
-  - Do NOT try to run `vibium` as a shell command — always use the `mcp__vibium__browser_*` tool calls directly
-- **`curl`** — Direct HTTP requests for API endpoints, JSON responses, and non-HTML routes.
-- **Shell scripts** — Run scripts in `.code_my_spec/qa/scripts/` for authentication flows and seed data setup.
-- **`mix run`** — Execute Elixir scripts for seeding data (e.g., `mix run priv/repo/qa_seeds.exs`).
+### Browser-rendered surfaces (LiveView, controllers serving HTML)
+
+Use the `mcp__vibium__browser_*` tools. These are MCP tool calls, not shell commands. Key tools:
+
+- `mcp__vibium__browser_launch` — Launch a browser instance
+- `mcp__vibium__browser_navigate` — Navigate to a URL
+- `mcp__vibium__browser_fill` / `browser_type` — Fill form fields (`type` is more robust for some inputs)
+- `mcp__vibium__browser_click` — Click elements
+- `mcp__vibium__browser_screenshot` — Capture screenshots (save to `.code_my_spec/qa/{story_id}/screenshots/`)
+- `mcp__vibium__browser_get_text` / `browser_get_html` — Read content
+- `mcp__vibium__browser_find` / `browser_find_all` — Locate elements by selector, role, text, etc.
+- `mcp__vibium__browser_wait_for_load` / `browser_wait_for_text` — Wait for state
+- `mcp__vibium__browser_is_visible` / `browser_is_enabled` — State assertions
+- `mcp__vibium__browser_quit` — Close the session when done
+
+Never try to run `vibium` as a shell command.
+
+### MCP tool surfaces
+
+When the story's deliverable IS an MCP tool the agent calls, call the tool **directly** via its
+typed `mcp__<server>__<tool>` wrapper — same JSON-RPC payload, same evidence value, with the
+benefit of auto-validation against the tool's schema. The project's MCP servers are auto-detected:
+any MCP server registered with the Claude Code plugin is available to you under
+`mcp__<server-name>__<tool-name>`.
+
+`curl` against `/mcp` is the fallback for cases where you specifically need to verify the wire
+protocol — the SSE `initialize` → `notifications/initialized` → `tools/call` handshake, transport
+headers, error envelope formatting. For "does the tool behave correctly" QA, the typed wrapper is
+preferred.
+
+### REST / JSON APIs and non-HTML controllers
+
+- `curl` — Direct HTTP requests; save response bodies to `.code_my_spec/qa/{story_id}/responses/` for evidence.
+
+### Supporting tools
+
+- Shell scripts in `.code_my_spec/qa/scripts/` — Authentication flows, token exchange, etc.
+- `mix run priv/repo/qa_seeds.exs` (or similar) — Seeds via the app's context modules.
 
 ## Issue Scopes
 
