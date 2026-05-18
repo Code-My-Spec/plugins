@@ -21,7 +21,7 @@ You complete the QA lifecycle in phases. Each time you stop, the validation hook
 1. **Plan** — If no QA plan exists at `.code_my_spec/qa/plan.md`, analyze the app and write one first
 2. **Brief** — Write a testing plan to `brief.md`, then stop for validation
 3. **Test** — Execute the test plan, capture screenshots, write `result.md`
-4. **Submit** — Call `submit_qa_result` (MCP tool) with `status: pass | fail | partial` and structured scenarios. The DB attempt is the canonical truth for `qa_complete`; `result.md` + screenshots are the supporting evidence trail.
+4. **Submit** — Call `mcp__plugin_codemyspec_local__submit_qa_result` (MCP tool — note the fully-qualified name) with `status: pass | fail | partial` and structured scenarios. The DB attempt is the canonical truth for `qa_complete`; `result.md` + screenshots are the supporting evidence trail.
 5. **Done** — Validation files issues and marks the story complete
 
 **Critical:** `mix spex` passing is NOT QA. The spex layer is contract-regression — running it in-process against the test endpoint doesn't catch env drift, JS/asset wiring, OAuth flows, or anything stateful in the running BEAM. Always drive the live surface via Vibium (UI), curl (API), or MCP-tool dogfooding (agent surfaces) and submit a pass attempt grounded in that exercise. If you can't actually drive the surface, submit `status: partial` with the gap named — never a fabricated pass.
@@ -108,10 +108,12 @@ The result must include:
 
 ## Phase 4: Submit
 
-After the result is validated, call the `submit_qa_result` MCP tool to file the typed attempt:
+After the result is validated, call the `submit_qa_result` MCP tool to file the typed attempt.
+
+**Tool naming:** MCP tools are exposed under their fully-qualified plugin path. For codemyspec, that's `mcp__plugin_codemyspec_local__<tool>`. The bare name `submit_qa_result` will NOT match anything — you must call:
 
 ```
-submit_qa_result(
+mcp__plugin_codemyspec_local__submit_qa_result(
   task_id: <task_id from start_task>,
   status: "pass" | "fail" | "partial",
   scenarios: [
@@ -124,9 +126,11 @@ submit_qa_result(
 
 The DB attempt is the canonical satisfaction of `qa_complete` — `result.md` is the human-readable evidence trail next to it. Only submit `pass` if you actually exercised the live surface (Vibium / curl / MCP dogfood) end-to-end. Use `partial` when some scenarios couldn't be tested (deferred surface, missing seed data, etc.) — never a fake pass.
 
-Related tools:
-- `list_qa_attempts(story_id: <id>)` — see the attempt history for a story (lineage via `parent_attempt_id`)
-- `invalidate_qa_attempt(attempt_id: <uuid>, reason: "<why>")` — engineer-driven audit action that re-clamps `qa_complete` when a prior pass was shallow
+If `submit_qa_result` appears missing from your tool list, do NOT skip submission — use `ToolSearch` with query `select:mcp__plugin_codemyspec_local__submit_qa_result` to load its schema explicitly before calling.
+
+Related tools (also fully-qualified):
+- `mcp__plugin_codemyspec_local__list_qa_attempts(story_id: <id>)` — attempt history for a story (lineage via `parent_attempt_id`)
+- `mcp__plugin_codemyspec_local__invalidate_qa_attempt(attempt_id: <uuid>, reason: "<why>")` — engineer-driven audit action that re-clamps `qa_complete` when a prior pass was shallow
 
 ## Testing Tools
 
