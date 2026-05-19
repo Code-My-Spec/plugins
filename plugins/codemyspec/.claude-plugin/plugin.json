@@ -26,6 +26,11 @@
       "headers": {
         "X-Working-Dir": "${PWD}"
       }
+    },
+    "vibium": {
+      "type": "stdio",
+      "command": "vibium",
+      "args": ["mcp"]
     }
   }
 }
