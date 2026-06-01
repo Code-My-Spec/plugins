@@ -3,7 +3,7 @@
 # Reads JSON from stdin, posts to local server, waits for decision via SSE.
 set -euo pipefail
 
-PORT="${CODEMYSPEC_PORT:-4003}"
+PORT="${CODEMYSPEC_PORT:-4004}"
 BASE="http://localhost:${PORT}"
 TIMEOUT="${CODEMYSPEC_APPROVE_TIMEOUT:-120}"
 ASK='{"hookSpecificOutput":{"hookEventName":"PermissionRequest","decision":{"behavior":"ask"}}}'

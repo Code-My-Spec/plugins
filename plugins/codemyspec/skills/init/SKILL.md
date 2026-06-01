@@ -2,21 +2,25 @@
 name: init
 description: Project setup, authentication, and sync. Use when starting a new project, logging in, or refreshing stale state.
 user-invocable: true
-allowed-tools: Bash(*/skill *), Bash(*/bootstrap-auth-*), Bash(open *)
+allowed-tools: Bash(curl *), Bash(open *), Bash(xdg-open *), Bash(start *)
 argument-hint: [auth|sync]
 ---
 
-!`${CLAUDE_PLUGIN_ROOT}/.claude-plugin/bin/skill init ${CLAUDE_SESSION_ID} $ARGUMENTS`
+!`curl -s -X POST http://localhost:4003/api/skills/start -H 'Content-Type: application/json' -H "X-Working-Dir: $(pwd)" -d '{"skill":"init","external_id":"'"$CLAUDE_SESSION_ID"'","arguments":"'"$ARGUMENTS"'"}'`
 
 If the response contains a `prompt` field, extract and follow it.
 
 If the response is `{"auth": true}`, follow the auth flow:
 
-1. Run: `${CLAUDE_PLUGIN_ROOT}/.claude-plugin/bin/bootstrap-auth-status`
+1. Run: `curl -s http://localhost:4003/api/bootstrap/auth/status`
    - If `"authenticated": true`, tell the user and stop.
 
-2. Run: `${CLAUDE_PLUGIN_ROOT}/.claude-plugin/bin/bootstrap-auth-start`
-   - Returns JSON with `auth_url`. Tell the user, then run: `open "<auth_url>"`
+2. Run: `curl -s -X POST http://localhost:4003/api/bootstrap/auth/start`
+   - Returns JSON with `auth_url`. Tell the user the URL, then open it:
+     - macOS: `open "<auth_url>"`
+     - Linux: `xdg-open "<auth_url>"`
+     - Windows: `start "<auth_url>"`
+   - If you can't determine the OS, just share the URL for the user to open.
 
 3. Wait for the user to confirm they completed sign-in.
 

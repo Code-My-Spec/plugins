@@ -2,10 +2,10 @@
 name: develop
 description: Full-lifecycle development — context orchestration, LiveView orchestration, and interactive refactoring. Spawns subagents for multi-step workflows.
 user-invocable: true
-allowed-tools: Bash(*/skill *), Read, Write, Edit, Glob, Grep, Task
+allowed-tools: Bash(curl *), Read, Write, Edit, Glob, Grep, Task
 argument-hint: [context|liveview|refactor] [ModuleName]
 ---
 
-!`${CLAUDE_PLUGIN_ROOT}/.claude-plugin/bin/skill develop ${CLAUDE_SESSION_ID} $ARGUMENTS`
+!`curl -s -X POST http://localhost:4003/api/skills/start -H 'Content-Type: application/json' -H "X-Working-Dir: $(pwd)" -d '{"skill":"develop","external_id":"'"$CLAUDE_SESSION_ID"'","arguments":"'"$ARGUMENTS"'"}'`
 
 The response is JSON with a `prompt` field containing your instructions. Extract and follow the prompt.
