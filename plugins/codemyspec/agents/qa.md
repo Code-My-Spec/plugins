@@ -39,6 +39,7 @@ tools: >-
   mcp__plugin_codemyspec_local__list_personas,
   mcp__plugin_codemyspec_local__get_persona,
   mcp__plugin_codemyspec_local__list_tasks,
+  mcp__plugin_codemyspec_local__list_session_subagents,
   mcp__plugin_codemyspec_local__sync_project,
   mcp__plugin_codemyspec_local__semantic_search,
   mcp__plugin_codemyspec_local__read_knowledge,
