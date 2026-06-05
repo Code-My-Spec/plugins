@@ -6,7 +6,7 @@
 # back to its built-in prompt.
 ASK='{"hookSpecificOutput":{"hookEventName":"PermissionRequest","decision":{"behavior":"ask"}}}'
 
-curl -sf -X POST "http://localhost:${CODEMYSPEC_PORT:-4004}/api/permissions/request" \
+curl -sf -X POST "http://localhost:${CODEMYSPEC_PORT:-4003}/api/permissions/request" \
   -H "Content-Type: application/json" \
   -H "X-Working-Dir: $PWD" \
   --data-binary @- 2>/dev/null || echo "$ASK"

@@ -7,7 +7,7 @@
 
 $ErrorActionPreference = 'SilentlyContinue'
 
-$port = if ($env:CODEMYSPEC_PORT) { $env:CODEMYSPEC_PORT } else { '4004' }
+$port = if ($env:CODEMYSPEC_PORT) { $env:CODEMYSPEC_PORT } else { '4003' }
 
 # Read all of stdin once; we need it for both event detection and the
 # forwarded POST body.

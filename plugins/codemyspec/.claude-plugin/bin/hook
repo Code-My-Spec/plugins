@@ -2,14 +2,14 @@
 # Route Claude Code hooks to the local cms server.
 # Reads JSON from stdin, POSTs to the matching /api/hooks/* endpoint.
 # On SessionStart, ensures the server is running (via `cms start`) when
-# pointed at the prod port; the in-repo dev plugin defaults to 4004 and
+# pointed at the prod port; the in-repo dev plugin defaults to 4003 and
 # expects you to run `mix phx.server` yourself.
 
 STDIN_DATA=$(cat)
 
 # Default port is rewritten by the release packager when shipping the
 # published plugin. CODEMYSPEC_PORT overrides for ad-hoc setups.
-PORT="${CODEMYSPEC_PORT:-4004}"
+PORT="${CODEMYSPEC_PORT:-4003}"
 
 EVENT=$(echo "$STDIN_DATA" | grep -o '"hook_event_name":"[^"]*"' | cut -d'"' -f4)
 
