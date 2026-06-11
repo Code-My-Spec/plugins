@@ -3,13 +3,13 @@ name: init
 description: Project setup, authentication, and sync. Use when starting a new project, logging in, or refreshing stale state.
 user-invocable: true
 allowed-tools: Bash(curl *), Bash(open *), Bash(xdg-open *), Bash(start *)
-argument-hint: [auth|sync]
+argument-hint: [auth]
 ---
 
 Use the **Bash tool** to run the command below, then read the JSON response:
 
 ```bash
-curl -s -X POST http://localhost:4003/api/skills/start \
+curl -s -X POST http://localhost:4003/api/skills/init \
   -H 'Content-Type: application/json' \
   -H "X-Working-Dir: $(pwd)" \
   -d '{"skill":"init","external_id":"'"$CLAUDE_SESSION_ID"'","arguments":"'"$ARGUMENTS"'"}'

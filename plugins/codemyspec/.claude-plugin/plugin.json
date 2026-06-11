@@ -1,7 +1,7 @@
 {
   "name": "codemyspec",
   "description": "Specification-driven development for Phoenix applications — design architecture, write specs, generate tests, and implement with specialized AI agents",
-  "version": "1.5.10",
+  "version": "1.5.12",
   "author": {
     "name": "CodeMySpec",
     "url": "https://codemyspec.com"
@@ -24,7 +24,7 @@
       "type": "http",
       "url": "http://localhost:4003/mcp",
       "headers": {
-        "X-Working-Dir": "${PWD}"
+        "X-Working-Dir": "${CLAUDE_PROJECT_DIR}"
       }
     },
     "vibium": {
