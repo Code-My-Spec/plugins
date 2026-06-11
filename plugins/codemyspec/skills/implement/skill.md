@@ -6,14 +6,9 @@ allowed-tools: Bash(curl *), Read, Write, Glob, Grep, Task
 argument-hint: [start|stop]
 ---
 
-Use the **Bash tool** to run the command below, then read the JSON response:
+The JSON response from the skill endpoint:
 
-```bash
-curl -s -X POST http://localhost:4003/api/skills/start \
-  -H 'Content-Type: application/json' \
-  -H "X-Working-Dir: $(pwd)" \
-  -d '{"skill":"implement","external_id":"'"$CLAUDE_SESSION_ID"'","arguments":"'"$ARGUMENTS"'"}'
-```
+!`curl -s -X POST http://localhost:4003/api/skills/start -H 'Content-Type: application/json' -H "X-Working-Dir: ${CLAUDE_PROJECT_DIR}" -d '{"skill":"implement","external_id":"'"$CLAUDE_SESSION_ID"'","arguments":"'"$ARGUMENTS"'"}'`
 
 If the response contains a `prompt` field, extract and follow it.
 

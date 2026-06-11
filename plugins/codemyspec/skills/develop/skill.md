@@ -6,13 +6,8 @@ allowed-tools: Bash(curl *), Read, Write, Edit, Glob, Grep, Task
 argument-hint: [context|liveview|refactor] [ModuleName]
 ---
 
-Use the **Bash tool** to run the command below, then read the JSON response and follow its `prompt` field:
+The JSON response from the skill endpoint:
 
-```bash
-curl -s -X POST http://localhost:4003/api/skills/start \
-  -H 'Content-Type: application/json' \
-  -H "X-Working-Dir: $(pwd)" \
-  -d '{"skill":"develop","external_id":"'"$CLAUDE_SESSION_ID"'","arguments":"'"$ARGUMENTS"'"}'
-```
+!`curl -s -X POST http://localhost:4003/api/skills/start -H 'Content-Type: application/json' -H "X-Working-Dir: ${CLAUDE_PROJECT_DIR}" -d '{"skill":"develop","external_id":"'"$CLAUDE_SESSION_ID"'","arguments":"'"$ARGUMENTS"'"}'`
 
 The response is JSON with a `prompt` field containing your instructions. Extract and follow the prompt.
