@@ -8,6 +8,6 @@ argument-hint: [story <id>|integrations|triage [severity]|fix [severity]]
 
 The JSON response from the skill endpoint:
 
-!`curl -s -X POST http://localhost:4003/api/skills/start -H 'Content-Type: application/json' -H "X-Working-Dir: ${CLAUDE_PROJECT_DIR}" -d '{"skill":"qa","external_id":"'"$CLAUDE_SESSION_ID"'","arguments":"'"$ARGUMENTS"'"}'`
+!`curl -s -X POST http://localhost:4003/api/skills/start -H "X-Working-Dir: ${CLAUDE_PROJECT_DIR}" --data-urlencode "skill=qa" --data-urlencode "external_id=${CLAUDE_SESSION_ID}" --data-urlencode "arguments=$ARGUMENTS"`
 
 The response is JSON with a `prompt` field containing your instructions. Extract and follow the prompt.
