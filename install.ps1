@@ -1,94 +1,129 @@
-# CodeMySpec CLI Installer (Windows)
-# Downloads cms-windows-x64.exe from GitHub Releases and installs to
-# %USERPROFILE%\.codemyspec\bin\cms.exe so it survives plugin upgrades.
+# CodeMySpec — standalone Windows installer
 #
-# Usage:
+# Installs the cms binary as a Windows service supervised by Shawl. This is
+# fully decoupled from the Claude Code plugin: it installs a machine service
+# that runs the local Phoenix/MCP server on :4003. The plugin only talks to
+# that port.
+#
+# Requires Administrator (registering a service does). The script
+# self-elevates with a UAC prompt if you launch it unelevated.
+#
+# Usage (from an elevated PowerShell, or let it elevate itself):
 #   iwr -useb https://raw.githubusercontent.com/Code-My-Spec/plugins/main/install.ps1 | iex
-#   .\install.ps1              # install latest
-#   .\install.ps1 -DryRun      # show what would happen
-#   $env:CMS_VERSION='v1.5.4'; .\install.ps1   # pin a version
+#   .\install.ps1
+#   $env:CMS_VERSION='v1.5.14'; .\install.ps1     # pin a release
+#   .\install.ps1 -Uninstall                       # remove the service
 
 [CmdletBinding()]
 param(
+  [switch]$Uninstall,
   [switch]$DryRun
 )
 
 $ErrorActionPreference = 'Stop'
 
-$Repo       = 'Code-My-Spec/plugins'
-$BinaryBase = 'cms'
-$Version    = if ($env:CMS_VERSION) { $env:CMS_VERSION } else { 'latest' }
+$Repo    = 'Code-My-Spec/plugins'
+$Binary  = 'cms-windows-x64.exe'
+$Version = if ($env:CMS_VERSION) { $env:CMS_VERSION } else { 'latest' }
 
-$CmsHome = Join-Path $env:USERPROFILE '.codemyspec'
-$BinDir  = Join-Path $CmsHome 'bin'
+$DataDir = 'C:\ProgramData\CodeMySpec'
+$BinDir  = Join-Path $DataDir 'bin'
+$CmsExe  = Join-Path $BinDir 'cms.exe'
 
-function Write-Info($msg) { Write-Host ">>> $msg" -ForegroundColor Blue }
-function Write-Ok($msg)   { Write-Host ">>> $msg" -ForegroundColor Green }
-function Write-Err($msg)  { Write-Host ">>> $msg" -ForegroundColor Red }
+function Write-Info($m) { Write-Host ">>> $m" -ForegroundColor Blue }
+function Write-Ok($m)   { Write-Host ">>> $m" -ForegroundColor Green }
+function Write-Err($m)  { Write-Host ">>> $m" -ForegroundColor Red }
 
-function Get-PlatformBinaryName {
-  $arch = (Get-CimInstance Win32_Processor | Select-Object -First 1).Architecture
-  # Architecture: 0=x86, 5=ARM, 9=x64, 12=ARM64
-  switch ($arch) {
-    9       { return "$BinaryBase-windows-x64.exe" }
-    12      { Write-Err 'Windows ARM64 builds are not yet published.'; exit 1 }
-    default { Write-Err "Unsupported architecture (Win32_Processor.Architecture=$arch)."; exit 1 }
+function Test-Admin {
+  $id = [Security.Principal.WindowsIdentity]::GetCurrent()
+  $p  = New-Object Security.Principal.WindowsPrincipal($id)
+  return $p.IsInRole([Security.Principal.WindowsBuiltinRole]::Administrator)
+}
+
+# Re-launch self elevated, preserving args + pinned version, then exit.
+function Invoke-SelfElevate {
+  Write-Info 'Elevation required — relaunching as Administrator…'
+  $argList = @('-NoProfile', '-ExecutionPolicy', 'Bypass', '-File', "`"$PSCommandPath`"")
+  if ($Uninstall) { $argList += '-Uninstall' }
+  if ($DryRun)    { $argList += '-DryRun' }
+  $env:CMS_VERSION = $Version
+  Start-Process -FilePath 'powershell.exe' -ArgumentList $argList -Verb RunAs
+  exit 0
+}
+
+# When piped via `iwr | iex` there is no $PSCommandPath to relaunch, so we
+# can only self-elevate when running from a file on disk.
+if (-not (Test-Admin)) {
+  if ($PSCommandPath) {
+    Invoke-SelfElevate
+  } else {
+    Write-Err 'Administrator privileges required. Open an elevated PowerShell and re-run:'
+    Write-Host '  iwr -useb https://raw.githubusercontent.com/Code-My-Spec/plugins/main/install.ps1 -OutFile install.ps1; .\install.ps1'
+    exit 1
   }
 }
 
-function Get-DownloadUrl([string]$binaryFile) {
+Write-Host ''
+Write-Host 'CodeMySpec Windows service installer' -ForegroundColor White
+Write-Host ''
+
+if ($Uninstall) {
+  if (Test-Path $CmsExe) {
+    Write-Info 'Uninstalling service…'
+    if (-not $DryRun) { & $CmsExe service uninstall }
+    Write-Ok 'Service removed. Binary + data left in place at:'
+    Write-Host "  $DataDir"
+  } else {
+    Write-Err "cms.exe not found at $CmsExe — nothing to uninstall."
+  }
+  exit 0
+}
+
+function Get-DownloadUrl {
   $releaseUrl = if ($Version -eq 'latest') {
     "https://api.github.com/repos/$Repo/releases/latest"
   } else {
     "https://api.github.com/repos/$Repo/releases/tags/$Version"
   }
-
   $headers = @{ 'User-Agent' = 'codemyspec-installer' }
   $resp = Invoke-RestMethod -Uri $releaseUrl -Headers $headers
-  $asset = $resp.assets | Where-Object { $_.name -eq $binaryFile } | Select-Object -First 1
-
+  $asset = $resp.assets | Where-Object { $_.name -eq $Binary } | Select-Object -First 1
   if (-not $asset) {
-    Write-Err "Could not find $binaryFile in release $Version."
-    Write-Host "  Available binaries at: https://github.com/$Repo/releases"
+    Write-Err "Could not find $Binary in release $Version."
+    Write-Host "  Releases: https://github.com/$Repo/releases"
     exit 1
   }
-
   return $asset.browser_download_url
 }
 
-function Install-Binary([string]$url, [string]$dest) {
-  New-Item -ItemType Directory -Force -Path $BinDir | Out-Null
-
-  Write-Info "Downloading $(Split-Path -Leaf $dest)..."
-  Invoke-WebRequest -Uri $url -OutFile $dest -UseBasicParsing
-}
-
-Write-Host ''
-Write-Host 'CodeMySpec CLI Installer' -ForegroundColor White
-Write-Host ''
-
-$binaryFile = Get-PlatformBinaryName
-Write-Info "Platform: windows-x64"
-
-$url  = Get-DownloadUrl $binaryFile
-$dest = Join-Path $BinDir 'cms.exe'
+$url = Get-DownloadUrl
 
 if ($DryRun) {
-  Write-Host "Would download from: $url"
-  Write-Host "Would install to:    $dest"
+  Write-Host "Would download: $url"
+  Write-Host "Would install:  $CmsExe"
+  Write-Host "Would run:      cms service install"
   exit 0
 }
 
-Install-Binary $url $dest
+New-Item -ItemType Directory -Force -Path $BinDir | Out-Null
+
+Write-Info "Downloading $Binary…"
+Invoke-WebRequest -Uri $url -OutFile $CmsExe -UseBasicParsing
+
+Write-Info 'Registering the Windows service (downloads Shawl on first run)…'
+& $CmsExe service install
+if ($LASTEXITCODE -ne 0) {
+  Write-Err "Service install failed (exit $LASTEXITCODE)."
+  exit $LASTEXITCODE
+}
 
 Write-Host ''
-Write-Ok 'Installation complete!'
+Write-Ok 'CodeMySpec is installed and running as a service on http://localhost:4003'
 Write-Host ''
-Write-Host '  Next steps:'
+Write-Host '  Manage it with:'
+Write-Host '    cms service status'
+Write-Host '    cms service stop | start | restart'
+Write-Host '    cms service uninstall'
 Write-Host ''
-Write-Host '  1. Install the plugin in Claude Code:'
-Write-Host '     claude plugin install <path-to-extension>'
-Write-Host ''
-Write-Host '  2. Open Claude Code in your Phoenix project and run:'
-Write-Host '     /codemyspec:authenticate'
+Write-Host "  Data + logs: $DataDir"
 Write-Host ''

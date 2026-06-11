@@ -1,6 +1,11 @@
 # Claude Code hook router (Windows / PowerShell).
-# Mirrors bin/hook: parse event, on SessionStart ensure cms is installed +
-# running, then POST the payload to the right /api/hooks/* endpoint.
+# Parse event, then POST the payload to the right /api/hooks/* endpoint.
+#
+# The cms server runs as a standalone Windows service (installed out-of-band
+# via installers/windows/install.ps1, supervised by Shawl, self-updating).
+# The plugin does NOT install, start, or update the binary — it only talks to
+# the running service on its port. If the service is down the POST simply
+# fails and the hook is a no-op.
 #
 # All errors are swallowed — a misbehaving hook should never break Claude
 # Code itself, just produce no hook response.
@@ -28,44 +33,6 @@ $endpoint = switch ($event) {
   'SubagentStart' { '/api/hooks/subagent-start' }
   'SubagentStop'  { '/api/hooks/subagent-stop' }
   default         { exit 0 }
-}
-
-$cmsBin = Join-Path $env:USERPROFILE '.codemyspec\bin\cms.exe'
-
-# Inline first-install — kept tiny so the heavier update path can live
-# inside the binary (`cms self-update`). Obviously can't call that if
-# the binary isn't on disk yet.
-function Install-CmsFirstTime {
-  $repo = 'Code-My-Spec/plugins'
-  $binary = 'cms-windows-x64.exe'
-  try {
-    $resp = Invoke-RestMethod -Uri "https://api.github.com/repos/$repo/releases/latest" `
-      -Headers @{ 'User-Agent' = 'codemyspec-hook' } `
-      -TimeoutSec 5
-    $asset = $resp.assets | Where-Object { $_.name -eq $binary } | Select-Object -First 1
-    if (-not $asset) { return }
-    $binDir = Split-Path $cmsBin -Parent
-    New-Item -ItemType Directory -Force -Path $binDir | Out-Null
-    Invoke-WebRequest -Uri $asset.browser_download_url -OutFile $cmsBin -UseBasicParsing -TimeoutSec 120
-  } catch { }
-}
-
-# Only manage the burrito binary when this plugin is pointed at the prod
-# port. On any other port we assume the developer is running the dev
-# server themselves.
-if ($event -eq 'SessionStart' -and $port -eq '4003') {
-  if (-not (Test-Path $cmsBin)) {
-    Install-CmsFirstTime
-  } else {
-    # Fire-and-forget self-update — runs while the user works. The binary
-    # halts/restarts itself if a new version actually downloaded.
-    Start-Process -FilePath $cmsBin -ArgumentList 'self-update' -WindowStyle Hidden | Out-Null
-  }
-
-  if (Test-Path $cmsBin) {
-    # Idempotent: cms start no-ops if the server is already up.
-    & $cmsBin start *> $null
-  }
 }
 
 # Forward to the local server. Print the response body so Claude Code can
