@@ -9,7 +9,7 @@ BINARY_NAME="cms"
 VERSION="${CMS_VERSION:-latest}"
 
 # Binary installs to shared ~/.codemyspec/bin/ so it survives plugin
-# upgrades. The plugin's hook + `cms self-update` read from the same path.
+# upgrades. The plugin's hook reads from the same path.
 CMS_HOME="$HOME/.codemyspec"
 BIN_DIR="$CMS_HOME/bin"
 mkdir -p "$BIN_DIR"

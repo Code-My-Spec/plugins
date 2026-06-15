@@ -57,14 +57,12 @@ first_install() {
 # themselves and would not appreciate a second server fighting for 4003 in
 # the background.
 if [ "$EVENT" = "SessionStart" ] && [ "$PORT" = "4003" ]; then
+  # First-install only — the binary no longer self-updates. Updates are
+  # delivered by re-running the platform install script (installer owns
+  # updates), so the binary on disk is never swapped out from under a running
+  # process (that swap is what raced Burrito's ERTS re-extract on Windows).
   if [ ! -x "$CMS_BIN" ]; then
     first_install
-  else
-    # Fire-and-forget self-update — runs while the user works. The binary's
-    # self-update halts/restarts itself if a new version actually downloaded,
-    # so this is safe to background.
-    "$CMS_BIN" self-update >/dev/null 2>&1 &
-    disown
   fi
 
   # Idempotent: `cms start` no-ops if the server is already up, otherwise

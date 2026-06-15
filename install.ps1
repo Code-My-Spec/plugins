@@ -124,10 +124,10 @@ $cred = if (-not $DryRun) {
 # Shawl's service binPath — Shawl is the entry point, cms is the wrapped
 # command. --kill-process-tree tears down Burrito's BEAM child on stop; no
 # --restart so Shawl uses its default (restart on nonzero exit), which revives
-# crashes + self-update exits but stays down on a clean `sc stop`.
+# crashes but stays down on a clean `sc stop`.
 $binPath = "`"$ShawlExe`" run --name $ServiceName --kill-process-tree --stop-timeout 20000 " +
            "--cwd `"$DataDir`" --log-dir `"$LogDir`" " +
-           "--env `"CMS_HOME=$DataDir`" --env CMS_SERVICE=1 " +
+           "--env `"CMS_HOME=$DataDir`" " +
            "-- `"$CmsExe`" server"
 
 if ($DryRun) {
