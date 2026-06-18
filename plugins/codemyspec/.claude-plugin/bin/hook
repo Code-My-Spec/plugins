@@ -1,14 +1,18 @@
 #!/bin/bash
 # Route Claude Code hooks to the local cms server.
-# Reads JSON from stdin, POSTs to the matching /api/hooks/* endpoint.
-# On SessionStart, ensures the server is running (via `cms start`) when
-# pointed at the prod port; the in-repo dev plugin defaults to 4003 and
-# expects you to run `mix phx.server` yourself.
+#
+# The cms server runs as a standalone service installed out-of-band — `brew
+# services` (launchd) on macOS, the Shawl-wrapped Windows service via the MSI.
+# This hook ONLY forwards events to the running server on its port; it does not
+# install, start, or update the binary. (A plain release can't be cleanly
+# daemonized from a hook anyway — that's the service manager's job.)
+#
+# If the server isn't running the POST simply fails and the hook is a no-op.
 
 STDIN_DATA=$(cat)
 
-# Default port is rewritten by the release packager when shipping the
-# published plugin. CODEMYSPEC_PORT overrides for ad-hoc setups.
+# Default port is rewritten by the release packager when shipping the published
+# plugin. CODEMYSPEC_PORT overrides for ad-hoc setups.
 PORT="${CODEMYSPEC_PORT:-4003}"
 
 EVENT=$(echo "$STDIN_DATA" | grep -o '"hook_event_name":"[^"]*"' | cut -d'"' -f4)
@@ -22,53 +26,6 @@ case "$EVENT" in
   SubagentStop)   ENDPOINT="/api/hooks/subagent-stop" ;;
   *)              exit 0 ;;
 esac
-
-CMS_BIN="$HOME/.codemyspec/bin/cms"
-
-# Inline first-install — kept tiny so we can delete the dedicated auto-update
-# script. The richer update path lives inside the binary as `cms self-update`,
-# but we obviously can't call that if the binary isn't on disk yet.
-first_install() {
-  local repo="Code-My-Spec/plugins"
-  local os arch binary url
-  os="$(uname -s)"
-  arch="$(uname -m)"
-  case "$os" in
-    Darwin) os=darwin ;;
-    Linux)  os=linux  ;;
-    *)      return 1  ;;
-  esac
-  case "$arch" in
-    arm64|aarch64) arch=arm64 ;;
-    x86_64|amd64)  arch=x64   ;;
-    *)              return 1  ;;
-  esac
-  binary="cms-${os}-${arch}"
-  url=$(curl -sf --max-time 5 "https://api.github.com/repos/${repo}/releases/latest" 2>/dev/null \
-        | grep "browser_download_url.*${binary}" | head -1 | cut -d'"' -f4)
-  [ -z "$url" ] && return 1
-  mkdir -p "$HOME/.codemyspec/bin"
-  curl -fSL --max-time 120 -o "$CMS_BIN" "$url" 2>/dev/null || return 1
-  chmod +x "$CMS_BIN"
-}
-
-# Only manage the burrito binary when this plugin is pointed at the prod
-# port. On any other port we assume the developer is running `mix phx.server`
-# themselves and would not appreciate a second server fighting for 4003 in
-# the background.
-if [ "$EVENT" = "SessionStart" ] && [ "$PORT" = "4003" ]; then
-  # First-install only — the binary no longer self-updates. Updates are
-  # delivered by re-running the platform install script (installer owns
-  # updates), so the binary on disk is never swapped out from under a running
-  # process (that swap is what raced Burrito's ERTS re-extract on Windows).
-  if [ ! -x "$CMS_BIN" ]; then
-    first_install
-  fi
-
-  # Idempotent: `cms start` no-ops if the server is already up, otherwise
-  # daemonizes + waits for /health to respond. Exits 0 on success.
-  [ -x "$CMS_BIN" ] && "$CMS_BIN" start >/dev/null 2>&1
-fi
 
 curl -s -X POST "http://localhost:${PORT}${ENDPOINT}" \
   -H "Content-Type: application/json" \
