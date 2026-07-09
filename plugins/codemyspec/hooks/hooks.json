@@ -32,6 +32,22 @@
             ]
           }
         ]
+      },
+      {
+        "matcher": "AskUserQuestion",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "curl",
+            "args": [
+              "-sS", "-X", "POST",
+              "http://localhost:4003/api/hooks/ask-user-question",
+              "-H", "Content-Type: application/json",
+              "-H", "X-Working-Dir: ${CLAUDE_PROJECT_DIR}",
+              "--data-binary", "@-"
+            ]
+          }
+        ]
       }
     ],
     "PostToolUse": [
