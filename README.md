@@ -10,13 +10,35 @@ maintain spec compliance.
 
 ## Installation
 
+CodeMySpec is two pieces: the `cms` server, a local background OS service that
+hosts the MCP tools and architecture graph, and the Claude Code plugin that
+drives it. Install the server first, then the plugin.
+
+### 1. Install the `cms` server
+
+macOS (Apple Silicon):
+```
+brew install Code-My-Spec/tap/codemyspec
+brew services start codemyspec
+```
+
+Windows (x64): download `cms-setup-x64.msi` from the latest release and run it,
+or from an elevated PowerShell:
+```
+iwr -useb https://raw.githubusercontent.com/Code-My-Spec/plugins/main/install.ps1 -OutFile install.ps1; .\install.ps1
+```
+
+Either installer registers `cms` as a background service (launchd via `brew
+services` on macOS, a Shawl-wrapped service via the MSI) listening on
+http://localhost:4003, and puts `cms` and `cms-mcp-relay` on your PATH.
+
+### 2. Install the plugin
+
 In Claude Code:
 ```
 /plugin marketplace add Code-My-Spec/plugins
 /plugin install codemyspec@codemyspec
 ```
-
-The CLI binary auto-installs on first SessionStart.
 
 ## Layout
 
