@@ -1,0 +1,34 @@
+{
+  "name": "codemyspec",
+  "version": "1.5.40",
+  "description": "Specification-driven development for Phoenix applications — design architecture, write specs, generate tests, and implement with specialized AI agents",
+  "author": {
+    "name": "CodeMySpec",
+    "url": "https://codemyspec.com"
+  },
+  "homepage": "https://codemyspec.com",
+  "repository": "https://github.com/Code-My-Spec/plugins",
+  "license": "MIT",
+  "keywords": [
+    "phoenix",
+    "elixir",
+    "specification",
+    "architecture",
+    "tdd",
+    "bdd",
+    "code-generation",
+    "liveview"
+  ],
+  "skills": "./skills/",
+  "mcpServers": "./.mcp.json",
+  "hooks": "./hooks/hooks.json",
+  "interface": {
+    "displayName": "CodeMySpec",
+    "shortDescription": "Specification-driven development for Phoenix applications",
+    "longDescription": "CodeMySpec turns user stories into working Phoenix code through a structured workflow: design architecture, write specifications, generate tests, then implement — orchestrated by a requirements graph that enforces clean architecture and spec compliance.",
+    "developerName": "CodeMySpec",
+    "category": "Developer Tools",
+    "capabilities": ["Read", "Write"],
+    "websiteURL": "https://codemyspec.com"
+  }
+}

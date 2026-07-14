@@ -40,11 +40,42 @@ In Claude Code:
 /plugin install codemyspec@codemyspec
 ```
 
+### Google Antigravity
+
+One-liner (installs into `~/.gemini/config/plugins/`, plus the Antigravity
+CLI's plugin directory if present):
+
+```
+curl -fsSL https://raw.githubusercontent.com/Code-My-Spec/plugins/main/install-antigravity.sh | bash
+```
+
+Or manually: the plugin lives under `antigravity/codemyspec/` — with this
+repo checked out, `agy plugin install ./antigravity/codemyspec`, or copy
+that directory into your workspace's `.agents/plugins/` (workspace-scoped)
+or `~/.gemini/config/plugins/` (global). The `cms` server install from
+step 1 is required either way.
+
+### OpenAI Codex
+
+The Codex port lives under `codex/codemyspec/`, and this repo doubles as
+a Codex plugin marketplace:
+
+```
+codex plugin marketplace add Code-My-Spec/plugins
+```
+
+Then install `codemyspec` from the `/plugins` picker, and trust its hooks
+via `/hooks`. The `cms` server install from step 1 is required.
+
 ## Layout
 
-- `.claude-plugin/marketplace.json` — marketplace manifest
+- `.claude-plugin/marketplace.json` — Claude Code marketplace manifest
+- `.agents/plugins/marketplace.json` — Codex marketplace catalog
 - `plugins/codemyspec/` — the CodeMySpec plugin source (skills, agents,
   hooks, install scripts)
+- `antigravity/codemyspec/` — the Google Antigravity port (skills, agents,
+  rules, hooks, MCP config)
+- `codex/codemyspec/` — the OpenAI Codex port (skills, hooks, MCP config)
 
 ## Getting Started
 

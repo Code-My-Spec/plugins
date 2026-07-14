@@ -1,0 +1,90 @@
+{
+  "hooks": {
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash \"${PLUGIN_ROOT}/bin/hook\"",
+            "commandWindows": "\"%PLUGIN_ROOT%\\bin\\hook.cmd\"",
+            "statusMessage": "CodeMySpec: registering session",
+            "timeout": 30
+          }
+        ]
+      }
+    ],
+    "PreToolUse": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash \"${PLUGIN_ROOT}/bin/hook\"",
+            "commandWindows": "\"%PLUGIN_ROOT%\\bin\\hook.cmd\"",
+            "timeout": 30
+          }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash \"${PLUGIN_ROOT}/bin/hook\"",
+            "commandWindows": "\"%PLUGIN_ROOT%\\bin\\hook.cmd\"",
+            "timeout": 30
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash \"${PLUGIN_ROOT}/bin/hook\"",
+            "commandWindows": "\"%PLUGIN_ROOT%\\bin\\hook.cmd\"",
+            "statusMessage": "CodeMySpec: validating work",
+            "timeout": 120
+          }
+        ]
+      }
+    ],
+    "SubagentStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash \"${PLUGIN_ROOT}/bin/hook\"",
+            "commandWindows": "\"%PLUGIN_ROOT%\\bin\\hook.cmd\"",
+            "timeout": 30
+          }
+        ]
+      }
+    ],
+    "SubagentStop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash \"${PLUGIN_ROOT}/bin/hook\"",
+            "commandWindows": "\"%PLUGIN_ROOT%\\bin\\hook.cmd\"",
+            "timeout": 30
+          }
+        ]
+      }
+    ],
+    "PermissionRequest": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash \"${PLUGIN_ROOT}/bin/hook\"",
+            "commandWindows": "\"%PLUGIN_ROOT%\\bin\\hook.cmd\"",
+            "timeout": 35
+          }
+        ]
+      }
+    ]
+  }
+}

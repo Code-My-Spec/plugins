@@ -1,0 +1,39 @@
+#!/bin/bash
+# Route Codex hooks to the local cms server.
+#
+# Codex speaks the same hook dialect as Claude Code (snake_case payloads,
+# `hook_event_name`, `hookSpecificOutput` responses), so this router POSTs
+# to the same /api/hooks/* endpoints the Claude Code plugin uses.
+#
+# The cms server runs as a standalone service installed out-of-band — `brew
+# services` (launchd) on macOS, the Shawl-wrapped Windows service via the MSI.
+# This hook ONLY forwards events to the running server on its port; it does not
+# install, start, or update the binary.
+#
+# If the server isn't running the POST simply fails and the hook is a no-op.
+
+STDIN_DATA=$(cat)
+
+# Default port is rewritten by the release packager when shipping the published
+# plugin. CODEMYSPEC_PORT overrides for ad-hoc setups.
+PORT="${CODEMYSPEC_PORT:-4003}"
+
+EVENT=$(echo "$STDIN_DATA" | grep -o '"hook_event_name":"[^"]*"' | cut -d'"' -f4)
+
+case "$EVENT" in
+  SessionStart)      ENDPOINT="/api/hooks/session-start" ;;
+  PreToolUse)        ENDPOINT="/api/hooks/pre-tool-use" ;;
+  PostToolUse)       ENDPOINT="/api/hooks/post-tool-use" ;;
+  Stop)              ENDPOINT="/api/hooks/stop" ;;
+  SubagentStart)     ENDPOINT="/api/hooks/subagent-start" ;;
+  SubagentStop)      ENDPOINT="/api/hooks/subagent-stop" ;;
+  PermissionRequest) ENDPOINT="/api/permissions/request" ;;
+  *)                 exit 0 ;;
+esac
+
+curl -sS --fail --max-time 30 -X POST "http://localhost:${PORT}${ENDPOINT}" \
+  -H "Content-Type: application/json" \
+  -H "X-Working-Dir: $(pwd)" \
+  -d "$STDIN_DATA" 2>/dev/null
+
+exit 0

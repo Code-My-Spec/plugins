@@ -3,7 +3,7 @@ name: develop
 description: Full-lifecycle development — context orchestration, LiveView orchestration, and interactive refactoring. Spawns subagents for multi-step workflows.
 user-invocable: true
 allowed-tools: Bash(curl *), Read, Write, Edit, Glob, Grep, Task
-argument-hint: [context|liveview|refactor] [ModuleName]
+argument-hint: "[context|liveview|refactor] [ModuleName]"
 ---
 
 The JSON response from the skill endpoint:

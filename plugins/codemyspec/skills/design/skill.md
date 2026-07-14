@@ -3,7 +3,7 @@ name: design
 description: Architecture design, UI design system, and technology strategy. Use before writing code to plan how to build it.
 user-invocable: true
 allowed-tools: Bash(curl *), Read, Write, Glob, Grep, WebSearch, WebFetch, Task, mcp__plugin_codemyspec_local__*
-argument-hint: [architecture|ui|strategy]
+argument-hint: "[architecture|ui|strategy]"
 ---
 
 The JSON response from the skill endpoint:

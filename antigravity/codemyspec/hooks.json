@@ -1,0 +1,49 @@
+{
+  "codemyspec": {
+    "PreInvocation": [
+      {
+        "type": "command",
+        "command": "./bin/ag-hook.sh pre-invocation",
+        "timeout": 30
+      }
+    ],
+    "PreToolUse": [
+      {
+        "matcher": "*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "./bin/ag-hook.sh pre-tool-use",
+            "timeout": 30
+          }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "./bin/ag-hook.sh post-tool-use",
+            "timeout": 30
+          }
+        ]
+      }
+    ],
+    "PostInvocation": [
+      {
+        "type": "command",
+        "command": "./bin/ag-hook.sh post-invocation",
+        "timeout": 30
+      }
+    ],
+    "Stop": [
+      {
+        "type": "command",
+        "command": "./bin/ag-hook.sh stop",
+        "timeout": 60
+      }
+    ]
+  }
+}

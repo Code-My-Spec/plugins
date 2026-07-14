@@ -1,0 +1,14 @@
+{
+  "mcpServers": {
+    "codemyspec": {
+      "command": "cms-mcp-relay",
+      "env": {
+        "CMS_MCP_BASE_URL": "http://localhost:4003"
+      }
+    },
+    "vibium": {
+      "command": "vibium",
+      "args": ["mcp"]
+    }
+  }
+}

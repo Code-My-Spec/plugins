@@ -3,7 +3,7 @@ name: qa
 description: QA testing and issue management — full app QA, per-story QA, integration planning, issue triage, and fixes.
 user-invocable: true
 allowed-tools: Bash(curl *), Bash(web *), Bash(lsof *), Bash(mix phx.*), Bash(mix run *), Bash(mix test *), Read, Write, Glob, Grep, Task, Agent
-argument-hint: [story <id>|integrations|triage [severity]|fix [severity]]
+argument-hint: "[story <id>|integrations|triage [severity]|fix [severity]]"
 ---
 
 The JSON response from the skill endpoint:

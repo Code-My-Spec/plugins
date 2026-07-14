@@ -3,7 +3,7 @@ name: implement
 description: Autonomous implementation loop — start or stop requirements-driven development. The agent walks the requirement graph automatically.
 user-invocable: true
 allowed-tools: Bash(curl *), Read, Write, Glob, Grep, Task
-argument-hint: [start|stop]
+argument-hint: "[start|stop]"
 ---
 
 The JSON response from the skill endpoint:

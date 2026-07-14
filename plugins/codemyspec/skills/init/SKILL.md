@@ -3,7 +3,7 @@ name: init
 description: Project setup, authentication, and sync. Use when starting a new project, logging in, or refreshing stale state.
 user-invocable: true
 allowed-tools: Bash(curl *), Bash(open *), Bash(xdg-open *), Bash(start *)
-argument-hint: [auth]
+argument-hint: "[auth]"
 ---
 
 The JSON response from the init endpoint:
