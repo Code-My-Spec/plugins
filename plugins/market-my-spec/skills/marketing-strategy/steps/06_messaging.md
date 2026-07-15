@@ -44,6 +44,66 @@ Wiebe's **Pain-Dream-Fix** structure maps directly onto headline/sub/pillars:
 - **Dream:** the after state, in their words
 - **Fix:** the bridge (you)
 
+## Awareness-stage gating (Schwartz) — pick the entry point before drafting
+
+Eugene Schwartz, *Breakthrough Advertising* (1966): the buyer's stage of awareness determines the entry point of the message. The same product needs different messages at different stages. The most common founder mistake: writing for product-aware buyers (people already comparing solutions) because that's the founder's mental state. If the real audience is problem-aware or solution-unaware, that copy lands flat.
+
+Before drafting headlines, classify where the beachhead persona sits.
+
+### The five stages
+
+| Stage | What the buyer knows | Entry point of the message |
+|---|---|---|
+| **Unaware** | Vague pain or context, doesn't yet name the problem | Lead with the symptom in their words. Don't mention the product. The job is to make them *feel* the cost of the status quo. |
+| **Problem-aware** | Names the problem, doesn't know the solution category exists | Lead with the cause / a new framing. Introduce the category as the named answer. |
+| **Solution-aware** | Knows solutions exist, doesn't know specific products | Lead with mechanism — why your approach inside the category is different. |
+| **Product-aware** | Knows specific products including yours, hasn't picked | Lead with proof and objection-handling. Compare honestly. |
+| **Most-aware** | Knows you, ready to act | Lead with the offer, the urgency, the specific next step. |
+
+A homepage that mixes stages confuses everyone. Pick the dominant stage and build from it.
+
+### How to pick the stage
+
+Pull from `marketing/03_personas.md`:
+- **Vocabulary section:** do they name the problem in their own words? Do they name solution categories or specific products?
+- **Where-to-reach-them:** is the venue one where people are already searching ("X vs Y comparisons"), or one where they're commiserating about the symptom?
+- **Buying-behavior:** are they actively evaluating, or passively venting?
+
+Default for new categories: market is mostly **problem-aware** at best. Don't write product-aware copy for an audience that doesn't know the category yet.
+
+Default for mature categories: market is **solution-aware** — they know what category they're shopping in.
+
+### Market sophistication (Schwartz's companion concept)
+
+How crowded is the category? Each entrant must escalate the claim — direct claim → quantified claim → mechanism → refined mechanism → personality/identity. Entering a saturated category with the same claim everyone else makes is a lost fight before it starts.
+
+| Sophistication | Claim type | What still works |
+|---|---|---|
+| 1 — fresh category | Direct claim ("Lose weight") | Direct claims |
+| 2 — claims escalating | Quantified ("Lose 15 lbs in 30 days") | Direct + quantification |
+| 3 — claims exhausted | Mechanism ("New X protocol") | Mechanism / how-it-works |
+| 4 — mechanisms exhausted | Refined mechanism + identity | Better mechanism + character |
+| 5 — fully saturated | Personality / community / narrative shift | Brand identity, community, "the world has changed" framing |
+
+If "AI-powered X" is your claim in 2026, you're at level 4-5. The claim itself doesn't carry; you have to position around mechanism + identity.
+
+### Write the awareness assessment first
+
+Before headline candidates, write to `marketing/06_messaging.md`:
+
+```markdown
+## Awareness gating
+
+- **Dominant awareness stage:** [unaware / problem-aware / solution-aware / product-aware / most-aware]
+- **Reason from research:** [one line, citing personas]
+- **Entry-point implication:** [what the lead message must do at this stage]
+- **Market sophistication level:** [1-5]
+- **Sophistication implication:** [what claim shapes still work, which are exhausted]
+- **What this rules out:** [message types that won't work for this stage]
+```
+
+This is the constraint the headline, sub, and pillars must respect. If a draft headline conflicts with the gating, fix the headline (or revisit the gating if research shifts).
+
 ## The components
 
 ### Headline (1 line, usually ≤ 10 words)
@@ -130,6 +190,19 @@ Feed the answer into pillars or the sub-headline.
 6. **Map objections.** 2–3 top objections with proof.
 7. **Voice and tone notes.** What vocabulary to use, what to avoid.
 
+## Signaling check (Sutherland)
+
+Beyond what the copy literally claims, what does it *signal*? Rory Sutherland (*Alchemy*, 2019): buyers process signals — price, design polish, the company you keep, the depth of writing, willingness to take a strong position — *before* they evaluate claims. Costly signals (things hard for a competitor to fake) are the credible ones.
+
+Once the messaging is drafted, run this check against every public artifact:
+
+- **Tone signal.** Casual + technical = "operator." Polished + corporate = "established." Apologetic = "small / unsure."
+- **Depth signal.** Long-form, specific, opinionated = expert. Generic, bullet-list, clichéd = farm content.
+- **Visual signal.** Custom illustration / photography = serious. Stock photos = budget. (Pulls from the visual identity in step 5's distinctive assets.)
+- **Company-you-keep signal.** Customers mentioned, conferences referenced, peers cited — these signal the league.
+
+Most signal failures are mismatches: a serious technical product paired with stock-photo marketing reads as not-yet-serious to the target buyer. A bootstrapped indie project paired with corporate VC-deck design reads as fake. Get the signals coherent with the positioning before shipping.
+
 ## Techniques for getting human language out of founders
 
 Some founders default to marketing-speak when they write. Unstick them:
@@ -156,6 +229,13 @@ Write `marketing/06_messaging.md`:
 - Pain phrases: "[verbatim]", "[verbatim]"
 - Dream-state phrases: "[verbatim]", "[verbatim]"
 - Solution phrases: "[verbatim]", "[verbatim]"
+
+## Awareness gating
+- **Dominant stage:** [unaware / problem-aware / solution-aware / product-aware / most-aware]
+- **Reason from research:** [one line, citing personas]
+- **Entry-point implication:** [what the lead message must do]
+- **Market sophistication level:** [1-5]
+- **What this rules out:** [message types that won't work for this stage]
 
 ## Headline
 **[one line]**
@@ -195,6 +275,8 @@ Write `marketing/06_messaging.md`:
 - [ ] Headline contains a concrete outcome, customer, mechanism, or number
 - [ ] No marketing-speak banned words present
 - [ ] Swap test: could a competitor truthfully use this exact copy? If yes, sharpen.
+- [ ] Awareness-gating respected: the lead message matches the persona's stage, not the founder's
+- [ ] Signaling check: tone, depth, and visual layer match the positioning (see Signaling check section)
 ```
 
 ## Guardrails

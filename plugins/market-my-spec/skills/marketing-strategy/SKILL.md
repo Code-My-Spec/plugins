@@ -1,35 +1,36 @@
 ---
 name: marketing-strategy
-description: Develop an initial marketing strategy from scratch via a guided 8-step flow — interviews the user, dispatches research agents for customer personas and competitive alternatives, synthesizes positioning, messaging, channels, and a 90-day plan. Works for any business type (software product, consultant/services, trades, local business). Use when the user wants to "build a marketing strategy", "figure out marketing", "define my ICP", "find my customers", "pick marketing channels", "write positioning", or is a founder/operator with no existing written strategy. Also use to iterate on an existing strategy when `marketing/` already exists.
+description: Develop an initial marketing strategy from scratch via a guided 9-step flow (steps 0-8) — establishes brand foundations, interviews the user, dispatches research agents for customer personas and competitive alternatives, synthesizes positioning, messaging, channels, and a 90-day plan. Works for any business type (software product, consultant/services, trades, local business). Use when the user wants to "build a marketing strategy", "figure out marketing", "define my ICP", "find my customers", "pick marketing channels", "write positioning", or is a founder/operator with no existing written strategy. Also use to iterate on an existing strategy when `marketing/` already exists.
 user-invocable: true
 argument-hint: [optional focus, e.g. "start from step 3" or "just redo positioning"]
 ---
 
 # Marketing Strategy
 
-You are guiding a founder or operator through building an initial marketing strategy. This skill walks the canonical 8-step sequence (STP + Dunford + Bullseye hybrid): interview current state, define ICP and jobs-to-be-done, research personas, pick a beachhead, draft positioning, write messaging, select channels, lock in a 90-day plan.
+You are guiding a founder or operator through building an initial marketing strategy. This skill walks the canonical 9-step sequence (STP + Dunford + Bullseye hybrid, brand-first): establish brand foundations and visual identity, interview current state, define ICP and jobs-to-be-done, research personas, pick a beachhead, draft positioning, write messaging, select channels, lock in a 90-day plan.
 
 **This skill is industry-agnostic.** The user may be building a software product, selling consulting services, installing granite countertops, running a law practice, opening a restaurant, or anything else. Do not default to dev-tool, SaaS, or tech examples unless the user's business is actually one of those. Draw examples from their industry.
 
 ## How to run this skill
 
-**Progressive disclosure.** The 8 steps each live in `steps/NN_*.md`. Do **not** read them all upfront. Orient first, then load one step at a time as you get to it.
+**Progressive disclosure.** The 9 steps each live in `steps/NN_*.md`. Do **not** read them all upfront. Orient first, then load one step at a time as you get to it.
 
 ```
 skills/marketing-strategy/
 ├── SKILL.md              ← you are here
 └── steps/
+    ├── 00_brand.md              ← brand foundations + first-pass visual identity
     ├── 01_current_state.md
     ├── 02_jobs_and_segments.md
     ├── 03_persona_research.md   ← dispatches research agents
     ├── 04_beachhead.md
-    ├── 05_positioning.md        ← light research (competitor pages)
-    ├── 06_messaging.md
-    ├── 07_channels.md           ← light research (channel tactics by ICP)
+    ├── 05_positioning.md        ← light research (competitor pages); refines distinctive assets
+    ├── 06_messaging.md          ← awareness-stage gating, signaling check
+    ├── 07_channels.md           ← light research (channel tactics by ICP); creation/capture balance
     └── 08_plan.md
 ```
 
-## Step 0 — Orient
+## Orientation (before any step)
 
 Before touching anything, do these in parallel:
 
@@ -37,12 +38,13 @@ Before touching anything, do these in parallel:
 2. Skim obvious project context: `README.md`, `package.json`, `mix.exs`, `Gemfile`, a landing page HTML file, or whatever signals the business type. For a contractor, this might just be a one-page site or a Google Business Profile — that's fine.
 3. If the user gave you a URL or product name in arguments, fetch it with WebFetch before asking a single question. Don't make the user type things you can read.
 
-Greet the user briefly, confirm the business (or ask in one sentence if you have zero signal), and confirm they want to run the full 8-step flow or jump to a specific step.
+Greet the user briefly, confirm the business (or ask in one sentence if you have zero signal), and confirm they want to run the full 9-step flow or jump to a specific step.
 
-## The 8 steps
+## The 9 steps
 
 | # | Step | Mode | Artifact |
 |---|---|---|---|
+| 0 | Brand & founder story | Interview + design generation | `marketing/00_brand.md` (+ `marketing/brand/`) |
 | 1 | Current state | Interview | `marketing/01_current_state.md` |
 | 2 | Jobs & segments | Interview | `marketing/02_jobs_and_segments.md` |
 | 3 | Persona research | **Research agents** | `marketing/03_personas.md` + `marketing/research/` |
@@ -75,10 +77,12 @@ If `marketing/` already exists with prior artifacts:
 
 1. Read what's there.
 2. Ask: "What's changed since last time? What worked, what didn't, what surprised you?"
-3. Identify which step(s) need updating — often one or two, not all eight. Common patterns:
+3. Identify which step(s) need updating — often one or two, not all nine. Common patterns:
    - New customer data → revisit steps 2, 3, 4 (jobs, personas, beachhead)
    - A channel isn't working → revisit step 7, possibly 5 (positioning might be off)
    - Revenue plateau → revisit step 4 (wrong beachhead) before blaming execution
+   - Brand drift / inconsistent voice across channels → revisit step 0 (founder story may have shifted, or the brand test may be too soft to rule things out)
+   - New visual identity work shipped externally (Claude Design / hired designer) → update step 0's visual identity section, then check step 5 component 7 still aligns
 4. Update the relevant step artifacts in place. At the bottom of each updated file, add a short `## Revision — YYYY-MM-DD` section noting what changed and why.
 
 ## What this skill does NOT do

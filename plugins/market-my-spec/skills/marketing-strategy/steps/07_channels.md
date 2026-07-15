@@ -18,44 +18,58 @@ From Weinberg & Mares, *Traction* (2015). Most skip the first step, which is the
 
 The step founders systematically skip: **step 1 Brainstorm, including channels that feel unnatural.** Weinberg's whole thesis is that founders under-weight channels they'd personally dislike.
 
+## Demand creation vs. demand capture (the 95:5 layer)
+
+Before listing channels, distinguish what they *do* in the buying funnel.
+
+- **Demand capture** — reach buyers who are *already in market*: actively searching, comparing, ready to act. SEO, paid search, comparison sites, marketplace listings, sales outbound.
+- **Demand creation** — reach buyers who are *not yet in market*: build awareness of the problem, the category, and your name *before* they have search intent. Long-form content distributed to communities, podcast guesting, organic social, PR, speaking, community building, build-in-public.
+- **Both** — email (capture for actives, nurture for non-actives), partnerships, short-form video.
+
+The 95:5 rule (Ehrenberg-Bass / John Dawes, popularized via the LinkedIn B2B Institute, ~2020): at any moment, ~5% of buyers in a B2B category are actively in market. The other 95% will buy eventually, but not now — and when they do, they'll pick the brand they already recognize. Pure demand-capture strategies (SEO + ads only) structurally cap at the 5% who are searching today.
+
+For a solo founder testing 3 middle-ring channels, the rule of thumb: **at least one capture channel and at least one creation channel.** Pure capture = you'll never grow beyond people who already type your category into Google. Pure creation = you'll build awareness with no harvest mechanism for it. Both, not one.
+
+(In the channel list below, every channel is tagged: *capture*, *creation*, or *both*.)
+
 ## The channel list (2026-updated)
 
 Traction's 19 channels from 2015, updated for 2026. Pick the ones that apply:
 
 **Still load-bearing:**
-- **SEO** — organic search. Long payback; compounds.
-- **SEM / Paid search** — Google/Bing Ads. High-intent queries.
-- **Content marketing** — blog, YouTube, podcasts. Compounds; needs consistency.
-- **Email marketing** — owned list; nurture + conversion. Requires list-building first.
-- **Viral marketing** — built-in sharing. Rare outside software.
-- **Sales / outbound** — direct outreach, cold email, calls, door-to-door. High-ACV or trust-heavy.
-- **Business development** — partnerships, distribution, co-marketing. Strong for services/B2B.
-- **Affiliate programs** — pay per referred conversion.
-- **Existing platforms** — build on App Store, Shopify, HomeAdvisor, Thumbtack, Etsy, Salesforce AppExchange.
-- **Community building** — run a community. Slow-burn, compounding.
-- **PR (earned)** — press, trade pubs, local news, industry newsletters.
-- **Speaking engagements** — conferences, podcasts as guest.
-- **Trade shows** — still dominant for some trades and B2B.
-- **Offline events** — meetups, workshops, dinners, open houses. Local services + B2B.
-- **Engineering as marketing** — free tools, calculators. Software-adjacent.
+- **SEO** — organic search. *Capture.* Long payback; compounds.
+- **SEM / Paid search** — Google/Bing Ads. *Capture.* High-intent queries.
+- **Content marketing** — blog, YouTube, podcasts. *Creation.* Compounds; needs consistency.
+- **Email marketing** — owned list; nurture + conversion. *Both.* Requires list-building first.
+- **Viral marketing** — built-in sharing. *Both.* Rare outside software.
+- **Sales / outbound** — direct outreach, cold email, calls, door-to-door. *Capture.* High-ACV or trust-heavy.
+- **Business development** — partnerships, distribution, co-marketing. *Both.* Strong for services/B2B.
+- **Affiliate programs** — pay per referred conversion. *Capture.*
+- **Existing platforms** — build on App Store, Shopify, HomeAdvisor, Thumbtack, Etsy, Salesforce AppExchange. *Capture.*
+- **Community building** — run a community. *Creation.* Slow-burn, compounding.
+- **PR (earned)** — press, trade pubs, local news, industry newsletters. *Creation.*
+- **Speaking engagements** — conferences, podcasts as guest. *Creation.*
+- **Trade shows** — still dominant for some trades and B2B. *Both.*
+- **Offline events** — meetups, workshops, dinners, open houses. *Creation.* Local services + B2B.
+- **Engineering as marketing** — free tools, calculators. *Both.* Software-adjacent.
 
 **Diminished / merge:**
-- **Display ads** — mostly dead outside retargeting. Fold into "paid social."
-- **Offline ads (print/radio/TV/billboards)** — niche; keep for local trades only.
-- **Unconventional PR (stunts)** — still works; fold into PR.
+- **Display ads** — mostly dead outside retargeting. *Capture.* Fold into "paid social."
+- **Offline ads (print/radio/TV/billboards)** — *Creation.* Niche; keep for local trades only.
+- **Unconventional PR (stunts)** — *Creation.* Still works; fold into PR.
 
 **Added for 2026:**
-- **Short-form video organic** — TikTok, Instagram Reels, YouTube Shorts. Distinct mechanics from "viral."
-- **LinkedIn organic** — posts + newsletters. Dominant B2B channel post-2022.
-- **YouTube long-form** — own channel; different from short-form.
-- **Creator / influencer partnerships** — paid + affiliate hybrid.
-- **Podcast guesting** (not hosting) — separate from speaking.
-- **Newsletter sponsorships** — Substack, Beehiiv, industry newsletters.
-- **Community platforms** — Discord, Slack, Circle, Geneva. Distinct from "building a community."
-- **AEO / LLM visibility** — getting cited by ChatGPT, Perplexity, Claude, Gemini. Structured FAQ content, Reddit presence (heavily weighted in LLM retrieval), Wikipedia-adjacent authority, schema markup.
-- **Marketplace / directory SEO** — G2, Capterra, Product Hunt, Yelp, Houzz, Thumbtack. Distinct from general SEO.
+- **Short-form video organic** — TikTok, Instagram Reels, YouTube Shorts. *Creation.* Distinct mechanics from "viral."
+- **LinkedIn organic** — posts + newsletters. *Creation* (occasionally both via DMs). Dominant B2B channel post-2022.
+- **YouTube long-form** — own channel; different from short-form. *Creation.*
+- **Creator / influencer partnerships** — paid + affiliate hybrid. *Both.*
+- **Podcast guesting** (not hosting) — *Creation.* Separate from speaking.
+- **Newsletter sponsorships** — Substack, Beehiiv, industry newsletters. *Creation.*
+- **Community platforms** — Discord, Slack, Circle, Geneva. *Creation.* Distinct from "building a community."
+- **AEO / LLM visibility** — getting cited by ChatGPT, Perplexity, Claude, Gemini. *Both* (search-time citation = capture; building authority pre-search = creation). Structured FAQ content, Reddit presence (heavily weighted in LLM retrieval), Wikipedia-adjacent authority, schema markup.
+- **Marketplace / directory SEO** — G2, Capterra, Product Hunt, Yelp, Houzz, Thumbtack. *Capture.* Distinct from general SEO.
 
-That's ~24 channels. Use the list as a checklist during Brainstorm.
+That's ~24 channels. Use the list as a checklist during Brainstorm. The capture/creation/both tags feed into Step 3's middle-ring balance check.
 
 ## Playbook anchors by business type
 
@@ -115,7 +129,7 @@ For each candidate, score:
 | **Differentiation fit** | Does it showcase the positioning's unique value? |
 | **Founder-personality fit** | Will the user actually sustain the work? An introvert picking live speaking = bad. |
 
-Pick 3 for the middle ring.
+Pick 3 for the middle ring. **Balance check:** the 3 must include at least one *capture* channel and at least one *creation* channel (per the 95:5 layer above). Pure-capture portfolios cap at the 5% currently in-market; pure-creation portfolios build awareness with no harvest mechanism. If the top-3 candidates fail this balance, swap one before testing.
 
 ## Step 4 — Test the middle ring (parallel, time-boxed)
 
@@ -190,6 +204,7 @@ Write `marketing/07_channels.md`:
 ## 2. Middle ring (3 candidates to test)
 
 ### Candidate 1: [channel name]
+- **Type:** [capture / creation / both]
 - **Why this channel:** [tied to persona research]
 - **Specific activity:** [what you'll literally do]
 - **Time budget:** [hours/week]

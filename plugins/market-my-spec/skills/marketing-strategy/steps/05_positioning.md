@@ -111,6 +111,29 @@ Examples that work: "the shift to remote work" for collaboration tools in 2020; 
 
 Examples that don't: "the digital transformation of kitchens" for a granite installer — that's marketing-speak, not a trend.
 
+## Component 7 — Distinctive brand assets (Sharp layer)
+
+Dunford's canvas tells you what you uniquely deliver and to whom. It does not tell you how you become *recognizable* when buyers aren't in the buying moment.
+
+Byron Sharp, *How Brands Grow* (2010): buyers don't compare brands exhaustively — they satisfice with whichever brand surfaces first when the buying moment arrives. The mechanism is **mental availability**: the probability your brand comes to mind when a relevant situation occurs. Mental availability is built by **distinctive brand assets** (color, wordmark, voice patterns, signature phrases, a recognizable spokesperson) tied to **category entry points (CEPs)** — the specific situations, needs, and triggers that make someone think "I should do something about this."
+
+Differentiation says "we are the X-est." Distinctiveness says "you'll know it's us when you see it." Both matter. Components 1-5 handle the first; this component handles the second. Skipping it is how technically excellent products stay invisible.
+
+For a solo operator, the budget for distinctiveness is small. The discipline isn't.
+
+### What to define
+
+1. **Visual identity** — primary color, wordmark/logo, typography. Most solo founders work this out in a dedicated tool (Claude Design, Figma, a hired designer). Don't redo that work here; just capture the result so downstream channels apply it consistently. If no visual identity exists yet, flag it as a follow-up before launch.
+2. **Voice and signature phrases** — 2-4 phrases or framings the founder will repeat. The repetition is the asset. CodeMySpec example: *"you can't break it so bad we can't fix it."* A single line, recurring across long-form, podcast, internal docs, until the audience starts saying it back.
+3. **Spokesperson / character** — for a solo founder this is usually the founder. Decide *which version*: domain-expert teacher, blunt operator, outsider builder, contrarian. Pick one and hold it.
+4. **Category entry points (top 3)** — the trigger situations you most want buyers to associate with you. For a granite installer: "kitchen reno with a holiday deadline" / "kid's wedding next summer, finally time to fix up the house" / "GC needs a reliable stone sub for a new build." For each CEP, the marketing job is to be the brand that surfaces in that exact context.
+
+### What this is not
+
+- Not a brand book. A solo operator with a 30-page brand book is solving the wrong problem.
+- Not adjective-soup voice work ("authentic, approachable, bold"). Voice is signature phrases and demonstrated behavior, not adjectives.
+- Not differentiation in disguise. "Most reliable" is a differentiation claim, not a recognition asset. Distinctive assets are *recognizable* before they're *meaningful*.
+
 ## Light research — competitor positioning
 
 Before finalizing, fetch 2-3 direct competitors' homepages. For each, via WebFetch:
@@ -208,6 +231,26 @@ Write `marketing/05_positioning.md`:
 
 ## 6. Relevant trend (optional)
 [Genuine trend that makes this urgent — or "none used" if the positioning stands without one]
+
+## 7. Distinctive brand assets
+
+### Visual identity
+- Primary color: [hex]
+- Wordmark / logo style: [description]
+- Typography: [primary]
+- Source: [Claude Design / Figma / hired / self / none yet]
+
+### Voice
+- Signature phrases (2-4): "[phrase]" / "[phrase]" / "[phrase]"
+- POV / character label: [single label, e.g., "domain-expert teacher" / "blunt operator" / "anti-hype builder"]
+
+### Spokesperson
+- [Founder, version: e.g., "the lifelong-learner-turned-tool-builder"]
+
+### Category entry points (top 3)
+1. "When [trigger situation], buyers should think of us because [...]."
+2. "When [...], buyers should think of us because [...]."
+3. "When [...], buyers should think of us because [...]."
 
 ## Moore shorthand (optional handoff artifact)
 > For [best-fit customer] who [trigger/JTBD], [product] is a [category] that [value theme], unlike [main alternative] which [limitation].

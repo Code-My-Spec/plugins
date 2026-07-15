@@ -31,6 +31,11 @@ Pull what they sell, who they claim to serve, and what proof they show.
 
 Compare to what the website/listing says. Gaps between spoken and public-facing descriptions are the first positioning signal.
 
+**Then push for the transformation (Drucker):**
+> "When that works for a customer, what's the before-and-after for them? What does their week look like the day before they hire you, vs. a month after?"
+
+Drucker (*The Practice of Management*, 1954): the purpose of a business is to create a customer. Operationally — define what you do by the customer's state-change, not by the product/service you ship. Founders default to output language ("we install countertops" / "we generate specs"). Push up a level. The answer usually surfaces a sharper positioning hook than the pitch in the first question, and feeds directly into step 5's value themes.
+
 ### 2. Origin
 > "What got you started? What were you seeing that made you think this was worth doing?"
 
@@ -105,6 +110,9 @@ Write `marketing/01_current_state.md`:
 
 ## What they do
 [1-2 sentences from the founder, in their words]
+
+## Customer transformation
+[Before-state → after-state. The customer's life or workflow the day before they hire, vs. a month after the work is done well. Not feature/output language.]
 
 ## Origin
 [What prompted them to start]
