@@ -1,0 +1,52 @@
+{
+  "name": "market-my-spec",
+  "version": "0.6.0",
+  "description": "Marketing for founders, in Codex. Three skills that work together: marketing-strategy (guided 9-step strategy flow), daily-plan (picks today's activities, manages your roster, scaffolds project-local skills), marketing-stack (infrastructure recipes: Reddit, Discord, Slack, Wix, Ghost, WordPress, Stripe, HubSpot, Postiz, Meta Ads, Facebook, Instagram, LinkedIn, Twitter/X, YouTube, Resend). Stack writes marketing/infrastructure.md so daily-plan reads one source of truth.",
+  "author": {
+    "name": "CodeMySpec",
+    "url": "https://codemyspec.com"
+  },
+  "homepage": "https://github.com/Code-My-Spec/plugins",
+  "repository": "https://github.com/Code-My-Spec/plugins",
+  "license": "MIT",
+  "keywords": [
+    "marketing",
+    "strategy",
+    "positioning",
+    "customer-research",
+    "jtbd",
+    "daily-planner",
+    "mcp",
+    "infrastructure",
+    "seo",
+    "social-media",
+    "reddit",
+    "discord",
+    "slack",
+    "stripe",
+    "hubspot",
+    "wordpress",
+    "ghost",
+    "wix"
+  ],
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "Market My Spec",
+    "shortDescription": "Marketing strategy and daily execution for founders",
+    "longDescription": "Use Codex as your marketing strategist, then as your daily operator. Runs a guided 9-step strategy flow (brand, ICP, jobs-to-be-done, persona research, beachhead, positioning, messaging, channels, 90-day plan), wires up the infrastructure your channels need, and picks 1-3 activities to ship each day. Industry-agnostic: works for software founders, consultants, trades, services, and local businesses.",
+    "developerName": "CodeMySpec",
+    "category": "Productivity",
+    "capabilities": [
+      "Interactive",
+      "Read",
+      "Write"
+    ],
+    "websiteURL": "https://codemyspec.com",
+    "defaultPrompt": [
+      "Build a marketing strategy for my business",
+      "What marketing should I ship today?",
+      "Set up the infrastructure my channels need"
+    ],
+    "brandColor": "#2563EB"
+  }
+}
