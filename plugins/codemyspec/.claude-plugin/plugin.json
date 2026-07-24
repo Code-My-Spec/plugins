@@ -1,7 +1,7 @@
 {
   "name": "codemyspec",
   "description": "Specification-driven development for Phoenix applications — design architecture, write specs, generate tests, and implement with specialized AI agents",
-  "version": "1.5.40",
+  "version": "1.6.0",
   "author": {
     "name": "CodeMySpec",
     "url": "https://codemyspec.com"
@@ -24,7 +24,6 @@
       "type": "stdio",
       "command": "cms-mcp-relay",
       "env": {
-        "CLAUDE_PROJECT_DIR": "${CLAUDE_PROJECT_DIR}",
         "CMS_MCP_BASE_URL": "http://localhost:4003"
       }
     },
