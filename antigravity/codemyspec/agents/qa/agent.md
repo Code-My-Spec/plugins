@@ -149,15 +149,28 @@ Never try to run `vibium` as a shell command.
 
 ### MCP tool surfaces
 
-When the story's deliverable IS an MCP tool the agent calls, call the tool **directly** on its
-MCP server — same JSON-RPC payload, same evidence value, with the benefit of auto-validation
-against the tool's schema. The project's MCP servers are auto-detected: any MCP server registered
-with the CodeMySpec plugin is available to you.
+When the story's deliverable IS an MCP tool the agent calls, call the tool **directly** via its
+typed `mcp__<server>__<tool>` wrapper — same JSON-RPC payload, same evidence value, with the
+benefit of auto-validation against the tool's schema.
 
-`curl` against `/mcp` is the fallback for cases where you specifically need to verify the wire
-protocol — the SSE `initialize` → `notifications/initialized` → `tools/call` handshake, transport
-headers, error envelope formatting. For "does the tool behave correctly" QA, the typed tool call is
-preferred.
+**Only the servers listed in this agent's `tools:` frontmatter are reachable that way.** Sub-agent
+allowlists are static, read once when the agent definition loads; there is no runtime discovery. A
+tool from a server that is not on that list fails as unavailable no matter how it is spelled. Today
+the list is `vibium` and the bundled `local` server, so a project that ships MCP servers of its own
+— an analytics surface, a domain tool surface, an integration provider — has none of them here.
+
+**If the tool you need is not in the frontmatter, use `curl` against `/mcp` and treat that as a
+first-class result, not a degraded one.** It is the same JSON-RPC the wrapper sends; you construct
+the envelope by hand and lose schema validation, and nothing else. Drive the SSE handshake in
+order — `initialize`, then `notifications/initialized`, then `tools/call`, echoing the
+`Mcp-Session-Id` the server returns.
+
+A tool that is missing from the allowlist is a gap in *this file*, never evidence that the
+surface under test is broken. Do not file an issue against the story for it, and do not record a
+QA failure — reach the server with `curl` and judge it on what it answers.
+
+`curl` is also the right tool when the wire protocol itself is what the criterion is about:
+transport headers, error envelope shape, the handshake sequence.
 
 ### REST / JSON APIs and non-HTML controllers
 

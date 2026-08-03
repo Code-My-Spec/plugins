@@ -1,7 +1,7 @@
 {
   "name": "codemyspec",
-  "description": "Specification-driven development for Phoenix applications — design architecture, write specs, generate tests, and implement with specialized AI agents",
-  "version": "1.7.7",
+  "description": "Specification-driven development for Phoenix applications \u2014 design architecture, write specs, generate tests, and implement with specialized AI agents",
+  "version": "1.8.0",
   "author": {
     "name": "CodeMySpec",
     "url": "https://codemyspec.com"
@@ -21,16 +21,22 @@
   ],
   "mcpServers": {
     "local": {
-      "type": "stdio",
-      "command": "cms-mcp-relay",
-      "env": {
-        "CMS_MCP_BASE_URL": "http://localhost:4003"
+      "type": "http",
+      "url": "http://localhost:4003/mcp?dir=${CLAUDE_PROJECT_DIR}"
+    },
+    "cms_cloud": {
+      "type": "http",
+      "url": "https://codemyspec.com/mcp/harness",
+      "headers": {
+        "X-Project-ID": "${CMS_PROJECT_ID}"
       }
     },
     "vibium": {
       "type": "stdio",
       "command": "vibium",
-      "args": ["mcp"]
+      "args": [
+        "mcp"
+      ]
     }
   }
 }
