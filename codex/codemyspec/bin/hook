@@ -31,9 +31,41 @@ case "$EVENT" in
   *)                 exit 0 ;;
 esac
 
-curl -sS --fail --max-time 30 -X POST "http://localhost:${PORT}${ENDPOINT}" \
-  -H "Content-Type: application/json" \
-  -H "X-Working-Dir: $(pwd)" \
-  -d "$STDIN_DATA" 2>/dev/null
+# Which working copy this is, read at request time. Same reasoning as the
+# Claude plugin's router, which carries the long version: a published plugin is
+# installed once and serves every checkout, so it can neither bake an id into
+# its URLs nor take one from the environment, and without it the server falls
+# back to guessing from a path.
+#
+# `.cms_harness.json` is in every working copy with the id in it. Walking up
+# because a hook's cwd is wherever the agent is, not necessarily the root.
+harness_id() {
+  local dir="$PWD"
+  while [ "$dir" != "/" ]; do
+    if [ -f "$dir/.cms_harness.json" ]; then
+      # grep, not jq: jq is not a dependency and a hook that dies on a missing
+      # binary is worse than one that sends no id.
+      grep -o '"harness_id"[[:space:]]*:[[:space:]]*"[^"]*"' "$dir/.cms_harness.json" |
+        head -1 | cut -d'"' -f4
+      return
+    fi
+    dir="$(dirname "$dir")"
+  done
+}
+
+ID="$(harness_id)"
+
+if [ -n "$ID" ]; then
+  curl -sS --fail --max-time 30 -X POST "http://localhost:${PORT}${ENDPOINT}" \
+    -H "Content-Type: application/json" \
+    -H "X-Working-Dir: $(pwd)" \
+    -H "X-Harness-Id: $ID" \
+    -d "$STDIN_DATA" 2>/dev/null
+else
+  curl -sS --fail --max-time 30 -X POST "http://localhost:${PORT}${ENDPOINT}" \
+    -H "Content-Type: application/json" \
+    -H "X-Working-Dir: $(pwd)" \
+    -d "$STDIN_DATA" 2>/dev/null
+fi
 
 exit 0

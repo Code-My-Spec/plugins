@@ -28,7 +28,7 @@ tools: >-
   mcp__plugin_codemyspec_local__list_issues,
   mcp__plugin_codemyspec_local__create_issue,
   mcp__plugin_codemyspec_*
-mcpServers: vibium, local
+mcpServers: vibium, local, cms_cloud
 model: sonnet
 color: yellow
 ---

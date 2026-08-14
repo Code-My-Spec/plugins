@@ -8,6 +8,22 @@
 # daemonized from a hook anyway — that's the service manager's job.)
 #
 # If the server isn't running the POST simply fails and the hook is a no-op.
+#
+# WINDOWS: `hooks.json` invokes this as `bash <path> <endpoint>`, and Claude
+# Code runs a hook command through `cmd.exe` there, so `bash` has to be on PATH
+# — Git Bash or WSL. That is not guaranteed, and it is a regression from the
+# `curl` this replaced, since curl ships with Windows 10+.
+#
+# There is no per-platform key to fix it with. Claude Code 2.1.227 does not know
+# `commandWindows` at all: it appears zero times in the binary, while
+# `hookSpecificOutput` appears 40 times and `SubagentStop` 53, so the probe
+# works and the absence is real. (Codex does support it, which is why
+# `plugins/codex/hooks/hooks.json` carries one — the precedent does not
+# transfer.)
+#
+# `hook.cmd` and `hook.ps1` beside this file are the Windows pair and take the
+# same endpoint argument, so whatever mechanism ends up invoking them will find
+# them ready.
 
 STDIN_DATA=$(cat)
 
@@ -15,19 +31,77 @@ STDIN_DATA=$(cat)
 # plugin. CODEMYSPEC_PORT overrides for ad-hoc setups.
 PORT="${CODEMYSPEC_PORT:-4003}"
 
-EVENT=$(echo "$STDIN_DATA" | grep -o '"hook_event_name":"[^"]*"' | cut -d'"' -f4)
+# The endpoint, named by the caller when it knows it.
+#
+# Sniffing `hook_event_name` cannot express what `hooks.json` needs, because two
+# of its entries are the *same* event: `ask-user-question` is a PreToolUse with
+# `matcher: AskUserQuestion`, so both arrive here identical except for a
+# `tool_name` deep in the payload. A router that dispatches on the event name
+# would send both to `/api/hooks/pre-tool-use` and the question surface would
+# never be reached.
+#
+# `hooks.json` already knows which endpoint each of its eight entries wants —
+# that is what its matchers *are* — so it passes it. The sniffing below stays
+# for callers that have no way to say, which is how the Codex router is invoked.
+ENDPOINT="$1"
 
-case "$EVENT" in
-  SessionStart)   ENDPOINT="/api/hooks/session-start" ;;
-  PreToolUse)     ENDPOINT="/api/hooks/pre-tool-use" ;;
-  PostToolUse)    ENDPOINT="/api/hooks/post-tool-use" ;;
-  Stop)           ENDPOINT="/api/hooks/stop" ;;
-  SubagentStart)  ENDPOINT="/api/hooks/subagent-start" ;;
-  SubagentStop)   ENDPOINT="/api/hooks/subagent-stop" ;;
-  *)              exit 0 ;;
-esac
+if [ -z "$ENDPOINT" ]; then
+  EVENT=$(echo "$STDIN_DATA" | grep -o '"hook_event_name":"[^"]*"' | cut -d'"' -f4)
 
-curl -s -X POST "http://localhost:${PORT}${ENDPOINT}" \
-  -H "Content-Type: application/json" \
-  -H "X-Working-Dir: $(pwd)" \
-  -d "$STDIN_DATA"
+  case "$EVENT" in
+    SessionStart)      ENDPOINT="/api/hooks/session-start" ;;
+    PreToolUse)        ENDPOINT="/api/hooks/pre-tool-use" ;;
+    PostToolUse)       ENDPOINT="/api/hooks/post-tool-use" ;;
+    Stop)              ENDPOINT="/api/hooks/stop" ;;
+    SubagentStart)     ENDPOINT="/api/hooks/subagent-start" ;;
+    SubagentStop)      ENDPOINT="/api/hooks/subagent-stop" ;;
+    PermissionRequest) ENDPOINT="/api/permissions/request" ;;
+    *)                 exit 0 ;;
+  esac
+fi
+
+# Which working copy this is, read at request time.
+#
+# A published plugin is installed once and serves every checkout, so it cannot
+# carry an id in its URLs the way a generated per-harness config does, and it
+# cannot send one from the environment either — nothing sets CMS_HARNESS_ID, and
+# the server has an explicit clause treating an unexpanded `${...}` as absent.
+# Both of the mechanisms that name a working copy are therefore unavailable to
+# the one config real users install, which leaves the server guessing by walking
+# up from a path, and its own warning says that "cannot tell two checkouts apart
+# reliably".
+#
+# `.cms_harness.json` has been sitting in every working copy the whole time with
+# the id in it. This reads it. Walking up because a hook's cwd is wherever the
+# agent happens to be, which is not always the checkout root.
+harness_id() {
+  local dir="$PWD"
+  while [ "$dir" != "/" ]; do
+    if [ -f "$dir/.cms_harness.json" ]; then
+      # grep, not jq: jq is not a dependency of this plugin and a hook that
+      # fails on a missing binary is worse than one that sends no id.
+      grep -o '"harness_id"[[:space:]]*:[[:space:]]*"[^"]*"' "$dir/.cms_harness.json" |
+        head -1 | cut -d'"' -f4
+      return
+    fi
+    dir="$(dirname "$dir")"
+  done
+}
+
+ID="$(harness_id)"
+
+# Sent only when found. An empty header is not better than none — the server
+# treats "" the same as absent, but a header that is present and blank invites
+# the reader to conclude the id was sent and rejected.
+if [ -n "$ID" ]; then
+  curl -s -X POST "http://localhost:${PORT}${ENDPOINT}" \
+    -H "Content-Type: application/json" \
+    -H "X-Working-Dir: $(pwd)" \
+    -H "X-Harness-Id: $ID" \
+    -d "$STDIN_DATA"
+else
+  curl -s -X POST "http://localhost:${PORT}${ENDPOINT}" \
+    -H "Content-Type: application/json" \
+    -H "X-Working-Dir: $(pwd)" \
+    -d "$STDIN_DATA"
+fi

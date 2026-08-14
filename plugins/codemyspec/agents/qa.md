@@ -44,8 +44,8 @@ tools: >-
   mcp__plugin_codemyspec_local__semantic_search,
   mcp__plugin_codemyspec_local__read_knowledge,
   mcp__plugin_codemyspec_local__list_knowledge,
-  mcp__plugin_codemyspec_local__*
-mcpServers: vibium, local
+  mcp__plugin_codemyspec_*
+mcpServers: vibium, local, cms_cloud
 model: sonnet
 color: red
 ---

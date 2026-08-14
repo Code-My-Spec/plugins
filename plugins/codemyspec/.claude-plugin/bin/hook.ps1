@@ -10,6 +10,8 @@
 # All errors are swallowed — a misbehaving hook should never break Claude
 # Code itself, just produce no hook response.
 
+param([string]$Endpoint)
+
 $ErrorActionPreference = 'SilentlyContinue'
 
 $port = if ($env:CODEMYSPEC_PORT) { $env:CODEMYSPEC_PORT } else { '4003' }
@@ -18,32 +20,71 @@ $port = if ($env:CODEMYSPEC_PORT) { $env:CODEMYSPEC_PORT } else { '4003' }
 # forwarded POST body.
 $stdin = [Console]::In.ReadToEnd()
 
-$event = $null
-try {
-  $event = ($stdin | ConvertFrom-Json).hook_event_name
-} catch { }
+# The endpoint, named by the caller when it knows it. Same reasoning as the bash
+# router: `ask-user-question` is a PreToolUse with a matcher, so it arrives
+# indistinguishable from the generic one and no amount of sniffing the event
+# name can separate them. `hooks.json` knows, and passes it.
+if (-not $Endpoint) {
+  $event = $null
+  try {
+    $event = ($stdin | ConvertFrom-Json).hook_event_name
+  } catch { }
 
-if (-not $event) { exit 0 }
+  if (-not $event) { exit 0 }
 
-$endpoint = switch ($event) {
-  'SessionStart'  { '/api/hooks/session-start' }
-  'PreToolUse'    { '/api/hooks/pre-tool-use' }
-  'PostToolUse'   { '/api/hooks/post-tool-use' }
-  'Stop'          { '/api/hooks/stop' }
-  'SubagentStart' { '/api/hooks/subagent-start' }
-  'SubagentStop'  { '/api/hooks/subagent-stop' }
-  default         { exit 0 }
+  $Endpoint = switch ($event) {
+    'SessionStart'      { '/api/hooks/session-start' }
+    'PreToolUse'        { '/api/hooks/pre-tool-use' }
+    'PostToolUse'       { '/api/hooks/post-tool-use' }
+    'Stop'              { '/api/hooks/stop' }
+    'SubagentStart'     { '/api/hooks/subagent-start' }
+    'SubagentStop'      { '/api/hooks/subagent-stop' }
+    'PermissionRequest' { '/api/permissions/request' }
+    default             { exit 0 }
+  }
 }
+
+$endpoint = $Endpoint
+
+# Which working copy this is, read at request time. Same reasoning as the bash
+# router beside this file, which carries the long version: a published plugin
+# serves every checkout, so it can neither bake an id into its URLs nor take one
+# from the environment, and without it the server guesses from a path.
+#
+# Walking up because a hook's cwd is wherever the agent is, not necessarily the
+# checkout root. `ConvertFrom-Json` rather than a regex, since PowerShell has it
+# and the bash side only avoids `jq` because jq is not guaranteed present.
+function Get-HarnessId {
+  $dir = (Get-Location).Path
+  while ($dir) {
+    $file = Join-Path $dir '.cms_harness.json'
+    if (Test-Path $file) {
+      try { return (Get-Content $file -Raw | ConvertFrom-Json).harness_id } catch { return $null }
+    }
+    $parent = Split-Path $dir -Parent
+    if ($parent -eq $dir) { break }
+    $dir = $parent
+  }
+  return $null
+}
+
+$headers = @{
+  'Content-Type'  = 'application/json'
+  'X-Working-Dir' = (Get-Location).Path
+}
+
+# Added only when found. The server reads an empty value as absent anyway, and a
+# header present-but-blank invites the reader to conclude an id was sent and
+# rejected.
+$harnessId = Get-HarnessId
+if ($harnessId) { $headers['X-Harness-Id'] = $harnessId }
 
 # Forward to the local server. Print the response body so Claude Code can
 # consume the hook reply. Any failure is silent — hooks shouldn't block.
 try {
   $resp = Invoke-WebRequest -Uri "http://localhost:$port$endpoint" `
     -Method Post `
-    -Headers @{
-      'Content-Type'  = 'application/json'
-      'X-Working-Dir' = (Get-Location).Path
-    } `
+    -Headers $headers `
     -Body $stdin `
     -UseBasicParsing `
     -TimeoutSec 30

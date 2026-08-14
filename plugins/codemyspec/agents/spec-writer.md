@@ -6,7 +6,7 @@ tools: >-
   mcp__plugin_codemyspec_local__start_task,
   mcp__plugin_codemyspec_local__evaluate_task,
   mcp__plugin_codemyspec_*
-mcpServers: local
+mcpServers: local, cms_cloud
 model: sonnet
 color: cyan
 ---
