@@ -38,14 +38,35 @@ $endpoint = switch ($event) {
   default         { exit 0 }
 }
 
-# Forward to the local server. Print the response body so Claude Code can
-# consume the hook reply. Any failure is silent — hooks shouldn't block.
+# Which working copy this is. Walking up because a hook's cwd is wherever the
+# agent happens to be, which is not always the checkout root.
+#
+# This shim used to send `X-Working-Dir` and no id, which is the one combination
+# the server no longer accepts: it resolved the working copy by walking up from
+# that path, and a wrong answer there succeeded against the wrong disk instead
+# of failing.
+function Get-HarnessId {
+  $dir = (Get-Location).Path
+  while ($dir) {
+    $file = Join-Path $dir '.cms_harness.json'
+    if (Test-Path $file) {
+      try { return (Get-Content $file -Raw | ConvertFrom-Json).harness_id } catch { return $null }
+    }
+    $parent = Split-Path $dir -Parent
+    if ($parent -eq $dir) { break }
+    $dir = $parent
+  }
+  return $null
+}
+
+# Forward to the local server. Print the response body so Codex can consume the
+# hook reply. Any failure is silent — hooks shouldn't block.
 try {
   $resp = Invoke-WebRequest -Uri "http://localhost:$port$endpoint" `
     -Method Post `
     -Headers @{
-      'Content-Type'  = 'application/json'
-      'X-Working-Dir' = (Get-Location).Path
+      'Content-Type' = 'application/json'
+      'X-Harness-Id' = Get-HarnessId
     } `
     -Body $stdin `
     -UseBasicParsing `

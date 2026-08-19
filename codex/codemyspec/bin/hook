@@ -55,17 +55,13 @@ harness_id() {
 
 ID="$(harness_id)"
 
-if [ -n "$ID" ]; then
-  curl -sS --fail --max-time 30 -X POST "http://localhost:${PORT}${ENDPOINT}" \
-    -H "Content-Type: application/json" \
-    -H "X-Working-Dir: $(pwd)" \
-    -H "X-Harness-Id: $ID" \
-    -d "$STDIN_DATA" 2>/dev/null
-else
-  curl -sS --fail --max-time 30 -X POST "http://localhost:${PORT}${ENDPOINT}" \
-    -H "Content-Type: application/json" \
-    -H "X-Working-Dir: $(pwd)" \
-    -d "$STDIN_DATA" 2>/dev/null
-fi
+# The id, unconditionally. The branch that sent no header went with the
+# directory: the server resolves a working copy from the id alone now, so a
+# checkout without `.cms_harness.json` gets a refusal naming
+# `mix cms.harness.onboard` rather than a hook that ran against another one.
+curl -sS --fail --max-time 30 -X POST "http://localhost:${PORT}${ENDPOINT}" \
+  -H "Content-Type: application/json" \
+  -H "X-Harness-Id: $ID" \
+  -d "$STDIN_DATA" 2>/dev/null
 
 exit 0

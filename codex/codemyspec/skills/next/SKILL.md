@@ -11,7 +11,7 @@ Fetch your instructions from the local CodeMySpec server, then follow them.
 
    ```bash
    curl -s -X POST http://localhost:4003/api/skills/start \
-     -H "X-Working-Dir: $PWD" \
+     -H "X-Harness-Id: $(grep -o '"harness_id"[[:space:]]*:[[:space:]]*"[^"]*"' "$PWD/.cms_harness.json" | head -1 | cut -d'"' -f4)" \
      --data-urlencode "skill=next" \
      --data-urlencode "external_id=codex:$PWD" \
      --data-urlencode "arguments="

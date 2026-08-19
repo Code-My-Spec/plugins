@@ -19,11 +19,36 @@ PORT="${CODEMYSPEC_PORT:-4003}"
 
 STDIN_DATA=$(cat)
 
+# Which working copy this is, read at request time.
+#
+# Antigravity delivers the workspace as `workspacePaths` in the JSON body, and a
+# plug used to lift that into a header so the working-directory chain could
+# resolve it. Both are gone — that was a filesystem path arriving from outside
+# in a different shape, and a wrong one succeeded against the wrong disk rather
+# than failing.
+#
+# `.cms_harness.json` carries the id. Walking up because a hook's cwd is
+# wherever the agent happens to be, which is not always the checkout root.
+harness_id() {
+  local dir="$PWD"
+  while [ "$dir" != "/" ]; do
+    if [ -f "$dir/.cms_harness.json" ]; then
+      # grep, not jq: jq is not a dependency of this plugin and a hook that
+      # fails on a missing binary is worse than one that sends no id.
+      grep -o '"harness_id"[[:space:]]*:[[:space:]]*"[^"]*"' "$dir/.cms_harness.json" |
+        head -1 | cut -d'"' -f4
+      return
+    fi
+    dir="$(dirname "$dir")"
+  done
+}
+
 # --fail keeps 4xx/5xx bodies (HTML error pages) out of stdout — Antigravity
 # parses stdout as the hook decision, so only a 2xx JSON body may pass through.
 RESPONSE=$(printf '%s' "$STDIN_DATA" | curl -sS --fail --max-time 30 -X POST \
   "http://localhost:${PORT}/api/antigravity/hooks/${EVENT}" \
   -H "Content-Type: application/json" \
+  -H "X-Harness-Id: $(harness_id)" \
   --data-binary @- 2>/dev/null)
 
 if [ -n "$RESPONSE" ]; then

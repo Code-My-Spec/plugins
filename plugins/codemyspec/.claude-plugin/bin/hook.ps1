@@ -68,16 +68,14 @@ function Get-HarnessId {
   return $null
 }
 
+# The id, and no directory. The server resolves the working copy from the id
+# alone now — a path on the wire did not fail when wrong, it succeeded against
+# the wrong disk — so a checkout with no .cms_harness.json gets a refusal naming
+# `mix cms.harness.onboard` rather than a hook that ran against another one.
 $headers = @{
-  'Content-Type'  = 'application/json'
-  'X-Working-Dir' = (Get-Location).Path
+  'Content-Type' = 'application/json'
+  'X-Harness-Id' = Get-HarnessId
 }
-
-# Added only when found. The server reads an empty value as absent anyway, and a
-# header present-but-blank invites the reader to conclude an id was sent and
-# rejected.
-$harnessId = Get-HarnessId
-if ($harnessId) { $headers['X-Harness-Id'] = $harnessId }
 
 # Forward to the local server. Print the response body so Claude Code can
 # consume the hook reply. Any failure is silent — hooks shouldn't block.

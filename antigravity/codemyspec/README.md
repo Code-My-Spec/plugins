@@ -40,7 +40,7 @@ published plugin, and `CODEMYSPEC_PORT` overrides the hook port ad hoc.
 | `Stop` hook (block + reason) | `Stop` → `{"decision":"continue","reason":…}` | drives the requirement-graph eval loop |
 | `SubagentStart`/`SubagentStop`, `PermissionRequest` | — | no AG equivalent; dropped |
 | `!`-inline command in skills | explicit "run this command" instruction | AG skills have no inline execution |
-| `${CLAUDE_PROJECT_DIR}` | `$PWD` at command time / `workspacePaths[0]` in hooks | relay falls back to cwd when the env var is unset |
+| `${CLAUDE_PROJECT_DIR}` | `$PWD` at command time; hooks send the id from `.cms_harness.json` | no directory travels on the wire |
 | `${CLAUDE_SESSION_ID}` → `external_id` | `antigravity:$PWD` (workspace-stable) | see open questions |
 | `agents/*.md` subagents | `agents/<name>/agent.md` | frontmatter: `name`+`description` only; body = system prompt; no `tools`/`model` fields (parent decides tool grants at spawn time); invoked via delegation or `@agent-name` |
 
@@ -48,8 +48,10 @@ published plugin, and `CODEMYSPEC_PORT` overrides the hook port ad hoc.
 
 `CodeMySpecLocalWeb.Antigravity.HooksController` serves
 `/api/antigravity/hooks/{pre-invocation,pre-tool-use,post-tool-use,post-invocation,stop}`
-behind the `:antigravity_hook` pipeline (`AntigravityWorkspace` lifts
-`workspacePaths[0]` into `X-Working-Dir`, then the standard scope chain).
+behind the `:antigravity_hook` pipeline (`HarnessScope`, same as every other
+hook — `ag-hook.sh` reads the id out of `.cms_harness.json`). `workspacePaths[0]`
+used to be lifted into `X-Working-Dir` by an `AntigravityWorkspace` plug; that
+went with the rest of working-directory resolution.
 Sessions key on `conversationId`. Stop reuses the full Claude StopController
 decision tree with the response translated to Antigravity's dialect
 (`block` → `continue`). Known gaps, forced by Antigravity's hook schemas:

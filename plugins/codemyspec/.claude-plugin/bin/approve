@@ -6,7 +6,23 @@
 # back to its built-in prompt.
 ASK='{"hookSpecificOutput":{"hookEventName":"PermissionRequest","decision":{"behavior":"ask"}}}'
 
+# Which working copy this is. `.cms_harness.json` carries the id; walking up
+# because a hook's cwd is wherever the agent happens to be. The `X-Working-Dir`
+# this replaced was resolved by walking up to a mix.exs server-side, which
+# succeeded against the wrong disk when wrong instead of failing.
+harness_id() {
+  local dir="$PWD"
+  while [ "$dir" != "/" ]; do
+    if [ -f "$dir/.cms_harness.json" ]; then
+      grep -o '"harness_id"[[:space:]]*:[[:space:]]*"[^"]*"' "$dir/.cms_harness.json" |
+        head -1 | cut -d'"' -f4
+      return
+    fi
+    dir="$(dirname "$dir")"
+  done
+}
+
 curl -sf -X POST "http://localhost:${CODEMYSPEC_PORT:-4003}/api/permissions/request" \
   -H "Content-Type: application/json" \
-  -H "X-Working-Dir: $PWD" \
+  -H "X-Harness-Id: $(harness_id)" \
   --data-binary @- 2>/dev/null || echo "$ASK"

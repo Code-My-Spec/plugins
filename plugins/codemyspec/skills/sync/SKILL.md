@@ -7,6 +7,6 @@ allowed-tools: Bash(curl *)
 
 The JSON response from the skill endpoint:
 
-!`curl -s -X POST http://localhost:4003/api/skills/start -H "X-Working-Dir: ${CLAUDE_PROJECT_DIR}" --data-urlencode "skill=sync" --data-urlencode "external_id=${CLAUDE_SESSION_ID}"`
+!`HID="$(grep -o '"harness_id"[[:space:]]*:[[:space:]]*"[^"]*"' "${CLAUDE_PROJECT_DIR}/.cms_harness.json" | head -1 | cut -d'"' -f4)"; curl -s -X POST "http://localhost:4003/api/harnesses/${HID:-unonboarded}/skills/start" --data-urlencode "skill=sync" --data-urlencode "external_id=${CLAUDE_SESSION_ID}"`
 
 The response is JSON with a `prompt` field containing your instructions. Extract and follow the prompt.

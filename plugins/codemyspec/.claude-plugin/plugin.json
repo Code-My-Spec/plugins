@@ -1,7 +1,7 @@
 {
   "name": "codemyspec",
   "description": "Specification-driven development for Phoenix applications \u2014 design architecture, write specs, generate tests, and implement with specialized AI agents",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "author": {
     "name": "CodeMySpec",
     "url": "https://codemyspec.com"
@@ -22,7 +22,10 @@
   "mcpServers": {
     "local": {
       "type": "http",
-      "url": "http://localhost:4003/mcp?dir=${CLAUDE_PROJECT_DIR}"
+      "url": "http://localhost:4003/mcp",
+      "headers": {
+        "X-Harness-Id": "${CMS_HARNESS_ID}"
+      }
     },
     "cms_cloud": {
       "type": "http",

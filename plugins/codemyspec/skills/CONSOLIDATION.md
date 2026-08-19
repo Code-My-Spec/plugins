@@ -35,7 +35,7 @@ One MCP server in `plugin.json`. The local server is the single gateway.
     "local": {
       "type": "http",
       "url": "http://localhost:4003/mcp",
-      "headers": { "X-Working-Dir": "${PWD}" }
+      "headers": { "X-Harness-Id": "${CMS_HARNESS_ID}" }
     }
   }
 }
