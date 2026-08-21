@@ -1,7 +1,7 @@
 {
   "name": "codemyspec",
   "description": "Specification-driven development for Phoenix applications \u2014 design architecture, write specs, generate tests, and implement with specialized AI agents",
-  "version": "2.0.3",
+  "version": "2.0.4",
   "author": {
     "name": "CodeMySpec",
     "url": "https://codemyspec.com"
@@ -31,7 +31,7 @@
       "type": "http",
       "url": "https://codemyspec.com/mcp/harness",
       "headers": {
-        "X-Project-ID": "${CMS_CLOUD_PROJECT_ID}"
+        "X-Harness-Id": "${CMS_HARNESS_ID}"
       }
     },
     "vibium": {
