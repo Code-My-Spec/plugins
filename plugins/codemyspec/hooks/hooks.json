@@ -5,19 +5,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "curl",
-            "args": [
-              "-sS",
-              "--max-time",
-              "30",
-              "-X",
-              "POST",
-              "http://localhost:4003/api/hooks/session-start",
-              "-H",
-              "Content-Type: application/json",
-              "--data-binary",
-              "@-"
-            ]
+            "command": "node \"${CLAUDE_PLUGIN_ROOT}/hooks/post-hook.cjs\" session-start"
           }
         ]
       }
@@ -27,19 +15,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "curl",
-            "args": [
-              "-sS",
-              "--max-time",
-              "30",
-              "-X",
-              "POST",
-              "http://localhost:4003/api/hooks/pre-tool-use",
-              "-H",
-              "Content-Type: application/json",
-              "--data-binary",
-              "@-"
-            ]
+            "command": "node \"${CLAUDE_PLUGIN_ROOT}/hooks/post-hook.cjs\" pre-tool-use"
           }
         ]
       },
@@ -48,19 +24,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "curl",
-            "args": [
-              "-sS",
-              "--max-time",
-              "30",
-              "-X",
-              "POST",
-              "http://localhost:4003/api/hooks/ask-user-question",
-              "-H",
-              "Content-Type: application/json",
-              "--data-binary",
-              "@-"
-            ]
+            "command": "node \"${CLAUDE_PLUGIN_ROOT}/hooks/post-hook.cjs\" ask-user-question"
           }
         ]
       }
@@ -70,19 +34,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "curl",
-            "args": [
-              "-sS",
-              "--max-time",
-              "30",
-              "-X",
-              "POST",
-              "http://localhost:4003/api/hooks/post-tool-use",
-              "-H",
-              "Content-Type: application/json",
-              "--data-binary",
-              "@-"
-            ]
+            "command": "node \"${CLAUDE_PLUGIN_ROOT}/hooks/post-hook.cjs\" post-tool-use"
           }
         ]
       }
@@ -92,19 +44,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "curl",
-            "args": [
-              "-sS",
-              "--max-time",
-              "30",
-              "-X",
-              "POST",
-              "http://localhost:4003/api/hooks/stop",
-              "-H",
-              "Content-Type: application/json",
-              "--data-binary",
-              "@-"
-            ]
+            "command": "node \"${CLAUDE_PLUGIN_ROOT}/hooks/post-hook.cjs\" stop"
           }
         ]
       }
@@ -114,19 +54,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "curl",
-            "args": [
-              "-sS",
-              "--max-time",
-              "30",
-              "-X",
-              "POST",
-              "http://localhost:4003/api/hooks/subagent-start",
-              "-H",
-              "Content-Type: application/json",
-              "--data-binary",
-              "@-"
-            ]
+            "command": "node \"${CLAUDE_PLUGIN_ROOT}/hooks/post-hook.cjs\" subagent-start"
           }
         ]
       }
@@ -136,19 +64,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "curl",
-            "args": [
-              "-sS",
-              "--max-time",
-              "30",
-              "-X",
-              "POST",
-              "http://localhost:4003/api/hooks/subagent-stop",
-              "-H",
-              "Content-Type: application/json",
-              "--data-binary",
-              "@-"
-            ]
+            "command": "node \"${CLAUDE_PLUGIN_ROOT}/hooks/post-hook.cjs\" subagent-stop"
           }
         ]
       }
