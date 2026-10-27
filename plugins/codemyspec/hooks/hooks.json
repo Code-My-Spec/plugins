@@ -18,15 +18,6 @@
             "command": "node \"${CLAUDE_PLUGIN_ROOT}/hooks/post-hook.cjs\" pre-tool-use"
           }
         ]
-      },
-      {
-        "matcher": "AskUserQuestion",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "node \"${CLAUDE_PLUGIN_ROOT}/hooks/post-hook.cjs\" ask-user-question"
-          }
-        ]
       }
     ],
     "PostToolUse": [
@@ -49,35 +40,32 @@
         ]
       }
     ],
-    "SubagentStart": [
+    "UserPromptSubmit": [
       {
         "hooks": [
           {
             "type": "command",
-            "command": "node \"${CLAUDE_PLUGIN_ROOT}/hooks/post-hook.cjs\" subagent-start"
+            "command": "node \"${CLAUDE_PLUGIN_ROOT}/hooks/post-hook.cjs\" user-prompt-submit"
           }
         ]
       }
     ],
-    "SubagentStop": [
+    "SessionEnd": [
       {
         "hooks": [
           {
             "type": "command",
-            "command": "node \"${CLAUDE_PLUGIN_ROOT}/hooks/post-hook.cjs\" subagent-stop"
+            "command": "node \"${CLAUDE_PLUGIN_ROOT}/hooks/post-hook.cjs\" session-end"
           }
         ]
       }
     ],
-    "PermissionRequest": [
+    "Notification": [
       {
         "hooks": [
           {
             "type": "command",
-            "command": "bash",
-            "args": [
-              "${CLAUDE_PLUGIN_ROOT}/.claude-plugin/bin/approve"
-            ]
+            "command": "node \"${CLAUDE_PLUGIN_ROOT}/hooks/post-hook.cjs\" notification"
           }
         ]
       }

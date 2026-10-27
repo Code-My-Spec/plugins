@@ -17,6 +17,6 @@ Fetch your instructions from the local CodeMySpec server, then follow them.
      --data-urlencode "arguments=<args>"
    ```
 
-   Replace `<args>` with what the user asked for: `story <id>`, `integrations`, `triage [severity]`, or `fix [severity]`. Leave empty if unspecified.
+   Replace `<args>` with what the user asked for: `story <story_number>`, `integrations`, `triage [severity]`, or `fix [severity]`. Leave empty if unspecified.
 
 2. The response is JSON with a `prompt` field containing your instructions. Extract and follow the prompt.

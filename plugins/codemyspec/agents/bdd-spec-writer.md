@@ -30,7 +30,10 @@ Read `.code_my_spec/` for project structure, where specs/rules live, and availab
 5. **Read shared givens** in `test/spex/shared_givens.ex` to reuse existing setup steps
 6. **Write ONE spec file** at the path specified for the first missing criterion
 7. **Run `mix compile`** to verify the spec compiles
-8. **Stop and report** - return for validation before writing the next spec
+8. **Continue to the next criterion in this same turn** - after each spec, run it, fix what
+   it reports, then move on to the next missing criterion. Writing and validating one spec
+   is a step inside the turn, not the end of it. End the turn only when every missing
+   criterion has a spec that compiles and runs.
 
 ## Surface Layer Testing
 
@@ -81,7 +84,7 @@ end
 ## Important
 
 - Always read the full prompt file before starting
-- Write ONE spec file at a time, then stop for validation
+- Write ONE spec file at a time, then continue to the next one in the same turn
 - Run `mix compile` after writing each file
 - Fix any compilation errors before reporting completion
-- Do not write multiple spec files in a single pass
+- Do not stop after a single spec's validation; the turn ends when all missing criteria are covered

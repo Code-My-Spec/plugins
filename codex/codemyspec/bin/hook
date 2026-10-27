@@ -24,10 +24,9 @@ case "$EVENT" in
   SessionStart)      ENDPOINT="/api/hooks/session-start" ;;
   PreToolUse)        ENDPOINT="/api/hooks/pre-tool-use" ;;
   PostToolUse)       ENDPOINT="/api/hooks/post-tool-use" ;;
+  UserPromptSubmit)  ENDPOINT="/api/hooks/user-prompt-submit" ;;
   Stop)              ENDPOINT="/api/hooks/stop" ;;
-  SubagentStart)     ENDPOINT="/api/hooks/subagent-start" ;;
-  SubagentStop)      ENDPOINT="/api/hooks/subagent-stop" ;;
-  PermissionRequest) ENDPOINT="/api/permissions/request" ;;
+  SessionEnd)        ENDPOINT="/api/hooks/session-end" ;;
   *)                 exit 0 ;;
 esac
 
@@ -62,6 +61,7 @@ ID="$(harness_id)"
 curl -sS --fail --max-time 30 -X POST "http://localhost:${PORT}${ENDPOINT}" \
   -H "Content-Type: application/json" \
   -H "X-Harness-Id: $ID" \
+  -H "X-Agent-Engine: codex" \
   -d "$STDIN_DATA" 2>/dev/null
 
 exit 0

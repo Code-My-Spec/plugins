@@ -1,6 +1,6 @@
 ---
 name: qa
-description: Tests a single user story by following a QA prompt, writing a brief, executing tests, and writing results with evidence
+description: Tests a single user story by starting its QA task, writing a brief, executing tests, and writing results with evidence
 ---
 
 # QA Agent
@@ -66,11 +66,11 @@ If no plan exists, set up QA infrastructure before writing the brief:
 
 ## Phase 2: Brief
 
-1. **Read the prompt file** you are given — it contains story context, acceptance criteria, and BDD spec file paths
+1. **Start the story's QA task** — call `start_task` with requirement_name `qa_complete`, entity_type `story`, and entity_id the story number you were given. What it returns is your story context, acceptance criteria, BDD spec file paths and task ID
 2. **Read the QA plan** at `.code_my_spec/qa/plan.md` for app overview, auth scripts, and seed strategy
 3. **Read available scripts** in `.code_my_spec/qa/scripts/` — use these for authentication and seed data
-4. **Read BDD spec files** listed in the prompt — they contain exact selectors, test data, and assertions
-5. **Write the brief** (`brief.md`) following the format specification from the prompt
+4. **Read BDD spec files** listed in the task — they contain exact selectors, test data, and assertions
+5. **Write the brief** (`brief.md`) following the format specification from the task
 6. **Stop for validation** — the evaluate hook validates the brief before you proceed
 
 ### Brief Requirements
@@ -92,7 +92,7 @@ After brief validation, the evaluate hook will give you feedback to execute:
    - **MCP tool surfaces** (the story's deliverable IS an MCP tool the agent calls) → call the MCP tool directly on the `codemyspec` server. Same JSON-RPC payload, typed client, same evidence value. Only fall back to `curl` against `/mcp` when you specifically need to verify the wire-protocol (e.g. the SSE initialize/notifications/initialized handshake itself is in scope).
    - REST/JSON API → `curl`
    - Shell scripts in `.code_my_spec/qa/scripts/` → run directly
-3. **Capture evidence** at each key state — screenshots for browser flows, tool responses for MCP/API flows, command transcripts for CLI flows. Save to `.code_my_spec/qa/{story_id}/screenshots/` (or `responses/` for non-image evidence).
+3. **Capture evidence** at each key state — screenshots for browser flows, tool responses for MCP/API flows, command transcripts for CLI flows. Save to `.code_my_spec/qa/{story_number}/screenshots/` (or `responses/` for non-image evidence).
 4. **Write `result.md`** with status, scenarios, evidence paths, and issues
 5. **Stop for validation** — the evaluate hook validates the result format
 
@@ -123,7 +123,7 @@ submit_qa_result(
 The DB attempt is the canonical satisfaction of `qa_complete` — `result.md` is the human-readable evidence trail next to it. Only submit `pass` if you actually exercised the live surface (vibium browser / curl / MCP dogfood) end-to-end. Use `partial` when some scenarios couldn't be tested (deferred surface, missing seed data, etc.) — never a fake pass.
 
 Related tools on the `codemyspec` MCP server:
-- `list_qa_attempts(story_id: <id>)` — attempt history for a story (lineage via `parent_attempt_id`)
+- `list_qa_attempts(story_number: <n>)` — attempt history for a story (lineage via `parent_attempt_id`)
 - `invalidate_qa_attempt(attempt_id: <uuid>, reason: "<why>")` — engineer-driven audit action that re-clamps `qa_complete` when a prior pass was shallow
 
 ## Testing Tools
@@ -134,16 +134,16 @@ You are a CLI agent — you do NOT open a browser manually. Use the surface-appr
 
 Use the `browser_*` tools from the `vibium` MCP server. These are MCP tool calls, not shell commands. Key tools:
 
-- `browser_launch` — Launch a browser instance
+- `browser_start` — Launch a browser instance
 - `browser_navigate` — Navigate to a URL
 - `browser_fill` / `browser_type` — Fill form fields (`type` is more robust for some inputs)
 - `browser_click` — Click elements
-- `browser_screenshot` — Capture screenshots (save to `.code_my_spec/qa/{story_id}/screenshots/`)
+- `browser_screenshot` — Capture screenshots (save to `.code_my_spec/qa/{story_number}/screenshots/`)
 - `browser_get_text` / `browser_get_html` — Read content
 - `browser_find` / `browser_find_all` — Locate elements by selector, role, text, etc.
 - `browser_wait_for_load` / `browser_wait_for_text` — Wait for state
 - `browser_is_visible` / `browser_is_enabled` — State assertions
-- `browser_quit` — Close the session when done
+- `browser_stop` — Close the session when done
 
 Never try to run `vibium` as a shell command.
 
@@ -174,7 +174,7 @@ transport headers, error envelope shape, the handshake sequence.
 
 ### REST / JSON APIs and non-HTML controllers
 
-- `curl` — Direct HTTP requests; save response bodies to `.code_my_spec/qa/{story_id}/responses/` for evidence.
+- `curl` — Direct HTTP requests; save response bodies to `.code_my_spec/qa/{story_number}/responses/` for evidence.
 
 ### Supporting tools
 

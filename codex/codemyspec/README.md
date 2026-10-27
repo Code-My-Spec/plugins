@@ -19,7 +19,7 @@ codemyspec/
 
 Codex adopted Claude Code's hook protocol nearly verbatim: same
 `hooks.json` shape, same event names (SessionStart, PreToolUse,
-PostToolUse, Stop, SubagentStart/Stop, PermissionRequest), same
+PostToolUse, Stop, PermissionRequest), same
 snake_case input payload (`session_id`, `cwd`, `hook_event_name`,
 `tool_name`, `tool_input`), and same output contracts
 (`hookSpecificOutput.permissionDecision` + `updatedInput`,
@@ -47,7 +47,7 @@ Two deliberate choices keep server logic reusable:
 | `.claude-plugin/plugin.json` with inline `mcpServers` | `.codex-plugin/plugin.json` + `.mcp.json` | manifest references components by path |
 | `!`-inline command execution in skills | explicit "run this command" instruction | skills carry `external_id=codex:$PWD` instead of `${CLAUDE_SESSION_ID}` |
 | `/codemyspec:<skill>` slash commands | `$<skill>` mentions / `/skills` picker | |
-| `agents/*.md` subagents | — | Codex has no documented plugin agent format; SubagentStart/Stop hooks still fire for Codex-native subagents |
+| `agents/*.md` subagents | — | Codex has no documented plugin agent format |
 | Write/Edit/MultiEdit edit tracking | `apply_patch` | server's PostToolUse edit tracker keys on Claude tool names; `apply_patch` edits are NOT tracked yet (server gap, noted below) |
 | AGENTS.md shipped in plugin | project-level AGENTS.md | Codex reads the repo's AGENTS.md natively; `/init` installs it |
 

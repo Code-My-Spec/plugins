@@ -37,6 +37,18 @@
         ]
       }
     ],
+    "UserPromptSubmit": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash \"${PLUGIN_ROOT}/bin/hook\"",
+            "commandWindows": "\"%PLUGIN_ROOT%\\bin\\hook.cmd\"",
+            "timeout": 30
+          }
+        ]
+      }
+    ],
     "Stop": [
       {
         "hooks": [
@@ -50,7 +62,7 @@
         ]
       }
     ],
-    "SubagentStart": [
+    "SessionEnd": [
       {
         "hooks": [
           {
@@ -58,30 +70,6 @@
             "command": "bash \"${PLUGIN_ROOT}/bin/hook\"",
             "commandWindows": "\"%PLUGIN_ROOT%\\bin\\hook.cmd\"",
             "timeout": 30
-          }
-        ]
-      }
-    ],
-    "SubagentStop": [
-      {
-        "hooks": [
-          {
-            "type": "command",
-            "command": "bash \"${PLUGIN_ROOT}/bin/hook\"",
-            "commandWindows": "\"%PLUGIN_ROOT%\\bin\\hook.cmd\"",
-            "timeout": 30
-          }
-        ]
-      }
-    ],
-    "PermissionRequest": [
-      {
-        "hooks": [
-          {
-            "type": "command",
-            "command": "bash \"${PLUGIN_ROOT}/bin/hook\"",
-            "commandWindows": "\"%PLUGIN_ROOT%\\bin\\hook.cmd\"",
-            "timeout": 35
           }
         ]
       }

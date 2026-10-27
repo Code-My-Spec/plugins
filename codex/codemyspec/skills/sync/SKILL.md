@@ -1,6 +1,6 @@
 ---
 name: sync
-description: Sync project components and regenerate architecture views. Use after git pulls, before design sessions, or when views feel stale.
+description: Sync the project's files and components. Use after git pulls or before design sessions.
 ---
 
 # CodeMySpec — sync
