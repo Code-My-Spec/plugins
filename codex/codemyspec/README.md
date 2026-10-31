@@ -78,3 +78,30 @@ Requires the `cms` server (brew / Windows service) and `cms-mcp-relay` +
 4. Skills can't see the Codex `session_id` (hooks can), so they send a
    workspace-stable `codex:$PWD` external id — same open question as the
    Antigravity port.
+
+## Codex Cloud onboarding (manual resumption)
+
+Use **Connect a device → Codex Cloud** in CodeMySpec for the existing Phoenix
+project. The connection screen generates the installation script, environment
+settings, allowed hosts, and a **Start or resume** prompt for that device.
+
+1. Open a cloud environment with the project's repository and committed
+   `mix.exs`, `mix.lock`, and `.tool-versions`. Use x86_64 Linux.
+2. Apply the generated environment/network settings and run its installation
+   script from the repository root. Keep CMS reachable during agent turns.
+3. Paste **Start or resume** into the cloud conversation. Approve the CMS device
+   authorization link and code when shown. Credentials stay in the cloud
+   environment's private state directory.
+4. Wait for conversation readiness, including its agent identity and task tools,
+   before asking it to work. Reuse the same conversation and prompt to resume.
+
+The cloud helper's `resume` command restarts the harness if necessary and, when
+`CODEX_THREAD_ID` is present, registers the current conversation. The `mcp`
+command carries JSON-RPC requests through that registered session. This path
+uses the existing cloud helper; installing the desktop plugin and its hooks is
+not a prerequisite. Task evaluation and progress recording must be explicit.
+
+The client manually resumes the chat; automatic wake-up is not configured.
+Installation success alone does not mean the harness or conversation is ready.
+If the cloud environment loses its private state, rerun its installation and
+authorization steps. A different conversation must use its own thread identity.
