@@ -18,11 +18,8 @@
   "license": "MIT",
   "mcpServers": {
     "local": {
-      "headers": {
-        "X-Harness-Id": "${CMS_HARNESS_ID}"
-      },
       "type": "http",
-      "url": "http://localhost:${CMS_HARNESS_PORT:-4003}/mcp?dir=${CLAUDE_PROJECT_DIR}"
+      "url": "${CMS_SERVER_URL:-https://codemyspec.com}/mcp/harness"
     },
     "vibium": {
       "args": [
@@ -35,5 +32,5 @@
   },
   "name": "codemyspec",
   "repository": "https://github.com/Code-My-Spec/plugins",
-  "version": "2.0.749"
+  "version": "2.0.750"
 }

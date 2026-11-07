@@ -33,9 +33,12 @@ Two deliberate choices keep server logic reusable:
 - The MCP server in `.mcp.json` is named `plugin_codemyspec_local` so
   Codex's `mcp__<server>__<tool>` naming yields
   `mcp__plugin_codemyspec_local__*` — the exact prefix the server's
-  PreToolUse session-enrichment matcher expects. **Verify tool naming on
-  first install**; if Codex namespaces plugin servers differently, the
-  enrichment silently won't fire (tools still work).
+  PreToolUse session-enrichment matcher expects. Verified on Codex 0.167:
+  the hook injects the session id into each call, and the server resolves
+  that session to the agent SessionStart registered.
+- The server is the CodeMySpec server's own `/mcp/harness`, over HTTP. Codex
+  signs in with OAuth: run `codex mcp login plugin_codemyspec_local` once.
+  The plugin sends no identity of its own; the agent is named by the hook.
 - Hook commands run `${PLUGIN_ROOT}/bin/hook` (with a `commandWindows`
   `.cmd` twin), the same router script the Claude plugin ships. It routes
   by `hook_event_name`, so protocol drift shows up in one file.
@@ -62,9 +65,11 @@ Two deliberate choices keep server logic reusable:
   `codemyspec` from `/plugins`.
 - Hooks require trust: review and enable via `/hooks` in the Codex CLI.
 
-Requires the `cms` server (brew / Windows service) and `cms-mcp-relay` +
-`vibium` on PATH. Source config points at dev port 4003 (hooks/skills) and
-4003 (MCP); the release packager rewrites 4003→4003 for the published copy.
+Requires the `cms` server (brew / Windows service) for hooks and `vibium` on
+PATH. Source config points hooks at dev port 4003; the release packager
+rewrites 4003→4003 for the published copy. MCP goes to codemyspec.com
+directly; point a dev setup elsewhere with `mcp_servers.plugin_codemyspec_local.url`
+in `~/.codex/config.toml`.
 
 ## Known gaps / verify on first install
 
