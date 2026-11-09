@@ -1,9 +1,9 @@
 ---
 name: product
-description: Product management — guided story interview, review, and Three Amigos sessions. Use when defining what to build, refining requirements, reviewing story quality, or running an Example Mapping session on a story.
+description: Product management — guided story interview, review, Three Amigos sessions, and customer workflow mapping. Use when defining what to build, refining requirements, reviewing story quality, or running an Example Mapping session on a story.
 user-invocable: true
 allowed-tools: Bash(curl *), mcp__plugin_codemyspec_local__*
-argument-hint: "[interview|review|three-amigos <story_number>]"
+argument-hint: "[interview|review|three-amigos <story_number>|workflow]"
 ---
 
 The JSON response from the skill endpoint:
