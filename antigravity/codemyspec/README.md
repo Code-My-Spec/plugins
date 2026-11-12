@@ -10,7 +10,7 @@ with specialized AI agents.
 ```
 codemyspec/
 ├── plugin.json        # manifest (schema allows name + description only)
-├── mcp_config.json    # cms-mcp-relay (stdio → :4003) + vibium
+├── mcp_config.json    # cms-mcp-relay (stdio → :4003)
 ├── hooks.json         # PreInvocation / Pre+PostToolUse / PostInvocation / Stop
 ├── bin/ag-hook.sh     # forwards hook payloads to the cms server (:4003)
 ├── skills/<name>/SKILL.md   # 8 skills; auto-become /slash-commands in the CLI
@@ -26,7 +26,7 @@ codemyspec/
   `~/.gemini/antigravity-cli/plugins/`)
 
 Requires the `cms` server running locally (brew service / Windows service) and
-`cms-mcp-relay` + `vibium` on PATH. Source config points at dev ports
+`cms-mcp-relay` on PATH. Source config points at dev ports
 (4003 MCP, 4003 hooks/skills); the release packager rewrites these for the
 published plugin, and `CODEMYSPEC_PORT` overrides the hook port ad hoc.
 

@@ -1,11 +1,5 @@
 {
   "plugin_codemyspec_local": {
     "url": "https://codemyspec.com/mcp/harness"
-  },
-  "vibium": {
-    "command": "vibium",
-    "args": [
-      "mcp"
-    ]
   }
 }

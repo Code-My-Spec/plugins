@@ -65,8 +65,8 @@ Two deliberate choices keep server logic reusable:
   `codemyspec` from `/plugins`.
 - Hooks require trust: review and enable via `/hooks` in the Codex CLI.
 
-Requires the `cms` server (brew / Windows service) for hooks and `vibium` on
-PATH. Source config points hooks at dev port 4003; the release packager
+Requires the `cms` server (brew / Windows service) for hooks; the harness
+runs `vibium` for browser tools. Source config points hooks at dev port 4003; the release packager
 rewrites 4003→4003 for the published copy. MCP goes to codemyspec.com
 directly; point a dev setup elsewhere with `mcp_servers.plugin_codemyspec_local.url`
 in `~/.codex/config.toml`.

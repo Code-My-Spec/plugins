@@ -5,20 +5,7 @@ tools: >-
   Read, Write, Glob, Grep,
   Bash, Bash(mix test *), Bash(mix spex *), Bash(mix ecto.*),
   Bash(git stash *),
-  mcp__vibium__browser_start, mcp__vibium__browser_navigate,
-  mcp__vibium__browser_click, mcp__vibium__browser_fill,
-  mcp__vibium__browser_type, mcp__vibium__browser_screenshot,
-  mcp__vibium__browser_find, mcp__vibium__browser_find_all,
-  mcp__vibium__browser_get_text, mcp__vibium__browser_get_url,
-  mcp__vibium__browser_get_html, mcp__vibium__browser_wait,
-  mcp__vibium__browser_wait_for_text, mcp__vibium__browser_wait_for_url,
-  mcp__vibium__browser_wait_for_load, mcp__vibium__browser_scroll,
-  mcp__vibium__browser_hover, mcp__vibium__browser_press,
-  mcp__vibium__browser_keys, mcp__vibium__browser_select,
-  mcp__vibium__browser_is_visible, mcp__vibium__browser_is_checked,
-  mcp__vibium__browser_is_enabled, mcp__vibium__browser_get_attribute,
-  mcp__vibium__browser_get_value, mcp__vibium__browser_map,
-  mcp__vibium__browser_a11y_tree, mcp__vibium__browser_stop,
+  mcp__plugin_codemyspec_local__run_browser_script,
   mcp__plugin_codemyspec_local__run_script,
   mcp__plugin_codemyspec_local__tool_docs,
   mcp__plugin_codemyspec_local__start_task,
@@ -30,7 +17,7 @@ tools: >-
   mcp__plugin_codemyspec_local__list_issues,
   mcp__plugin_codemyspec_local__create_issue,
   mcp__plugin_codemyspec_*
-mcpServers: vibium, local, cms_cloud
+mcpServers: local, cms_cloud
 model: sonnet
 color: yellow
 ---
@@ -132,17 +119,16 @@ def process(data) do
 end
 ```
 
-## Verifying UI Fixes with Vibium
+## Verifying UI Fixes in a Browser
 
-When fixing QA-reported issues that involve UI behavior, use the Vibium browser tools to verify your fix:
+When fixing QA-reported issues that involve UI behavior, drive a browser with `run_browser_script` to verify your fix:
 
 1. **Read the QA plan** at `.code_my_spec/qa/plan.md` for server startup and auth strategy
 2. **Read the QA evidence** referenced in the issue — screenshots and result files show the original failure
-3. **Launch a browser** with `mcp__vibium__browser_start` and reproduce the original issue
+3. **Reproduce the original issue** in a `run_browser_script` script
 4. **Verify the fix** — confirm the UI now behaves correctly after your code change
-5. **Quit the browser** with `mcp__vibium__browser_stop` when done
 
-Do NOT run `vibium` as a shell command — always use the `mcp__vibium__browser_*` tool calls directly.
+Do NOT run `vibium` as a shell command; the harness drives the browser.
 
 ## Important
 

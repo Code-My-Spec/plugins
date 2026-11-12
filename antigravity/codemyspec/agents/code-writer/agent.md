@@ -100,17 +100,16 @@ def process(data) do
 end
 ```
 
-## Verifying UI Fixes with Vibium
+## Verifying UI Fixes in a Browser
 
-When fixing QA-reported issues that involve UI behavior, use the browser tools from the `vibium` MCP server to verify your fix:
+When fixing QA-reported issues that involve UI behavior, drive a browser with `run_browser_script` to verify your fix:
 
 1. **Read the QA plan** at `.code_my_spec/qa/plan.md` for server startup and auth strategy
 2. **Read the QA evidence** referenced in the issue — screenshots and result files show the original failure
-3. **Launch a browser** with the vibium `browser_start` MCP tool and reproduce the original issue
+3. **Reproduce the original issue** in a `run_browser_script` script
 4. **Verify the fix** — confirm the UI now behaves correctly after your code change
-5. **Quit the browser** with the vibium `browser_stop` MCP tool when done
 
-Do NOT run `vibium` as a shell command — always use the vibium `browser_*` MCP tools directly.
+Do NOT run `vibium` as a shell command; the harness drives the browser.
 
 ## Important
 

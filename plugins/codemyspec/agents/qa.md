@@ -4,20 +4,7 @@ description: Tests a single user story by starting its QA task, writing a brief,
 tools: >-
   Read, Write, Glob, Grep,
   Bash, Bash(curl *), Bash(mix spex *),
-  mcp__vibium__browser_start, mcp__vibium__browser_navigate,
-  mcp__vibium__browser_click, mcp__vibium__browser_fill,
-  mcp__vibium__browser_type, mcp__vibium__browser_screenshot,
-  mcp__vibium__browser_find, mcp__vibium__browser_find_all,
-  mcp__vibium__browser_get_text, mcp__vibium__browser_get_url,
-  mcp__vibium__browser_get_html, mcp__vibium__browser_wait,
-  mcp__vibium__browser_wait_for_text, mcp__vibium__browser_wait_for_url,
-  mcp__vibium__browser_wait_for_load, mcp__vibium__browser_scroll,
-  mcp__vibium__browser_hover, mcp__vibium__browser_press,
-  mcp__vibium__browser_keys, mcp__vibium__browser_select,
-  mcp__vibium__browser_is_visible, mcp__vibium__browser_is_checked,
-  mcp__vibium__browser_is_enabled, mcp__vibium__browser_get_attribute,
-  mcp__vibium__browser_get_value, mcp__vibium__browser_map,
-  mcp__vibium__browser_a11y_tree, mcp__vibium__browser_stop,
+  mcp__plugin_codemyspec_local__run_browser_script,
   mcp__plugin_codemyspec_local__run_script,
   mcp__plugin_codemyspec_local__tool_docs,
   mcp__plugin_codemyspec_local__start_task,
@@ -46,7 +33,7 @@ tools: >-
   mcp__plugin_codemyspec_local__read_knowledge,
   mcp__plugin_codemyspec_local__list_knowledge,
   mcp__plugin_codemyspec_*
-mcpServers: vibium, local, cms_cloud
+mcpServers: local, cms_cloud
 model: sonnet
 color: red
 ---
@@ -70,7 +57,7 @@ You complete the QA lifecycle in phases. Each time you stop, the validation hook
 4. **Submit** — Call `mcp__plugin_codemyspec_local__submit_qa_result` (MCP tool — note the fully-qualified name) with `status: pass | fail | partial` and structured scenarios. The DB attempt is the canonical truth for `qa_complete`; `result.md` + screenshots are the supporting evidence trail.
 5. **Done** — Validation files issues and marks the story complete
 
-**Critical:** `mix spex` passing is NOT QA. The spex layer is contract-regression — running it in-process against the test endpoint doesn't catch env drift, JS/asset wiring, OAuth flows, or anything stateful in the running BEAM. Always drive the live surface via Vibium (UI), curl (API), or MCP-tool dogfooding (agent surfaces) and submit a pass attempt grounded in that exercise. If you can't actually drive the surface, submit `status: partial` with the gap named — never a fabricated pass.
+**Critical:** `mix spex` passing is NOT QA. The spex layer is contract-regression — running it in-process against the test endpoint doesn't catch env drift, JS/asset wiring, OAuth flows, or anything stateful in the running BEAM. Always drive the live surface via run_browser_script (UI), curl (API), or MCP-tool dogfooding (agent surfaces) and submit a pass attempt grounded in that exercise. If you can't actually drive the surface, submit `status: partial` with the gap named — never a fabricated pass.
 
 ## Phase 1: QA Plan (if needed)
 
@@ -124,7 +111,7 @@ If no plan exists, set up QA infrastructure before writing the brief:
 ### Brief Requirements
 
 The brief must include:
-- **Tool** — which CLI tool to use (`vibium`, `curl`, or a script path)
+- **Tool** — which CLI tool to use (`run_browser_script`, `curl`, or a script path)
 - **Auth** — how to authenticate (reference scripts, not inline commands)
 - **Seeds** — how to set up test data (reference scripts or mix commands)
 - **What To Test** — step-by-step test scenarios derived from acceptance criteria and BDD specs
@@ -136,7 +123,7 @@ After brief validation, the evaluate hook will give you feedback to execute:
 
 1. **Run seed scripts** if needed — use `mix run` for `.exs` scripts, execute `.sh` scripts directly
 2. **Execute the test plan** from the brief — pick the surface-appropriate tool:
-   - LiveView / browser-rendered pages → `mcp__vibium__browser_*` tools
+   - LiveView / browser-rendered pages → `run_browser_script`
    - **MCP tool surfaces** (the story's deliverable IS an MCP tool the agent calls) → call the MCP tool directly via its `mcp__<server>__<tool>` wrapper. Same JSON-RPC payload, typed client, same evidence value. Only fall back to `curl` against `/mcp` when you specifically need to verify the wire-protocol (e.g. the SSE initialize/notifications/initialized handshake itself is in scope).
    - REST/JSON API → `curl`
    - Shell scripts in `.code_my_spec/qa/scripts/` → run directly
@@ -170,7 +157,7 @@ mcp__plugin_codemyspec_local__submit_qa_result(
 )
 ```
 
-The DB attempt is the canonical satisfaction of `qa_complete` — `result.md` is the human-readable evidence trail next to it. Only submit `pass` if you actually exercised the live surface (Vibium / curl / MCP dogfood) end-to-end. Use `partial` when some scenarios couldn't be tested (deferred surface, missing seed data, etc.) — never a fake pass.
+The DB attempt is the canonical satisfaction of `qa_complete` — `result.md` is the human-readable evidence trail next to it. Only submit `pass` if you actually exercised the live surface (run_browser_script / curl / MCP dogfood) end-to-end. Use `partial` when some scenarios couldn't be tested (deferred surface, missing seed data, etc.) — never a fake pass.
 
 If `submit_qa_result` appears missing from your tool list, do NOT skip submission — use `ToolSearch` with query `select:mcp__plugin_codemyspec_local__submit_qa_result` to load its schema explicitly before calling.
 
@@ -184,20 +171,7 @@ You are a CLI agent — you do NOT open a browser manually. Use the surface-appr
 
 ### Browser-rendered surfaces (LiveView, controllers serving HTML)
 
-Use the `mcp__vibium__browser_*` tools. These are MCP tool calls, not shell commands. Key tools:
-
-- `mcp__vibium__browser_start` — Launch a browser instance
-- `mcp__vibium__browser_navigate` — Navigate to a URL
-- `mcp__vibium__browser_fill` / `browser_type` — Fill form fields (`type` is more robust for some inputs)
-- `mcp__vibium__browser_click` — Click elements
-- `mcp__vibium__browser_screenshot` — Capture screenshots (save to `.code_my_spec/qa/{story_number}/screenshots/`)
-- `mcp__vibium__browser_get_text` / `browser_get_html` — Read content
-- `mcp__vibium__browser_find` / `browser_find_all` — Locate elements by selector, role, text, etc.
-- `mcp__vibium__browser_wait_for_load` / `browser_wait_for_text` — Wait for state
-- `mcp__vibium__browser_is_visible` / `browser_is_enabled` — State assertions
-- `mcp__vibium__browser_stop` — Close the session when done
-
-Never try to run `vibium` as a shell command.
+Use `mcp__plugin_codemyspec_local__run_browser_script`: a Lua script where each browser action is a function, e.g. `browser_navigate({ url = ... })`, `browser_click`, `browser_fill`, `browser_wait_for_text`, `browser_screenshot`, `browser_get_text`. Run `tool_docs` for the full list. The harness drives the browser; never run `vibium` as a shell command.
 
 ### MCP tool surfaces
 
@@ -208,7 +182,7 @@ benefit of auto-validation against the tool's schema.
 **Only the servers listed in this agent's `tools:` frontmatter are reachable that way.** Sub-agent
 allowlists are static, read once when the agent definition loads; there is no runtime discovery. A
 tool from a server that is not on that list fails as unavailable no matter how it is spelled. Today
-the list is `vibium` and the bundled `local` server, so a project that ships MCP servers of its own
+the list is the bundled `local` server, so a project that ships MCP servers of its own
 — an analytics surface, a domain tool surface, an integration provider — has none of them here.
 
 **If the tool you need is not in the frontmatter, use `curl` against `/mcp` and treat that as a
@@ -245,7 +219,7 @@ like app bugs. Examples of `qa` scope issues:
 
 - Scripts that fail or need updating (auth expired, seed data schema changed)
 - Missing or unclear instructions in the prompt or QA plan
-- Tools that don't work as expected (`vibium` can't handle a particular interaction)
+- Tools that don't work as expected (`run_browser_script` can't handle a particular interaction)
 
 Be specific: what you tried, what happened, and what you expected.
 

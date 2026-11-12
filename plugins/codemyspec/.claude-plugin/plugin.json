@@ -20,17 +20,9 @@
     "local": {
       "type": "http",
       "url": "${CMS_SERVER_URL:-https://codemyspec.com}/mcp/harness"
-    },
-    "vibium": {
-      "args": [
-        "${CLAUDE_PLUGIN_ROOT}/bin/vibium-mcp.js",
-        "mcp"
-      ],
-      "command": "node",
-      "type": "stdio"
     }
   },
   "name": "codemyspec",
   "repository": "https://github.com/Code-My-Spec/plugins",
-  "version": "2.0.759"
+  "version": "2.0.760"
 }
