@@ -71,64 +71,16 @@ via `/hooks`. The `cms` server install from step 1 is required.
 
 - `.claude-plugin/marketplace.json` — Claude Code marketplace manifest
 - `.agents/plugins/marketplace.json` — Codex marketplace catalog
-- `plugins/codemyspec/` — the CodeMySpec plugin source (skills, agents,
-  hooks, install scripts)
+- `plugins/codemyspec/` — the CodeMySpec Claude Code plugin (manifest, MCP
+  config, hooks)
 - `antigravity/codemyspec/` — the Google Antigravity port (skills, agents,
   rules, hooks, MCP config)
 - `codex/codemyspec/` — the OpenAI Codex port (skills, hooks, MCP config)
 
 ## Getting Started
 
-Open Claude Code in your Phoenix project directory and run:
-
-```
-/codemyspec:authenticate
-```
-
-## Skills
-
-All skills are accessed via `/codemyspec:<skill-name>` in Claude Code.
-
-### Architecture & Design
-
-| Skill | Description |
-|-------|-------------|
-| `design-architecture` | Guided session to map user stories to bounded contexts and components |
-| `review-context` | Validate a context design and child specs against best practices |
-| `design-ui` | Interactive design system builder with DaisyUI, theme switcher, and live preview |
-
-### Specification
-
-| Skill | Description |
-|-------|-------------|
-| `generate-spec` | Generate a component or context specification from stories and design rules |
-| `spec-context` | Generate specs for a context and all its child components via subagents |
-
-### Implementation
-
-| Skill | Description |
-|-------|-------------|
-| `generate-test` | Create tests from spec assertions using TDD patterns |
-| `generate-code` | Implement a component from its spec and test file |
-| `implement-context` | Implement a full context with dependency ordering (schema -> repo -> service -> context) |
-| `develop-context` | Full lifecycle: spec -> test -> code for a context |
-| `develop-liveview` | Full lifecycle: spec -> test -> code for a LiveView |
-
-### Testing & Orchestration
-
-| Skill | Description |
-|-------|-------------|
-| `write-bdd-specs` | Generate BDD tests for the next incomplete user story |
-| `manage-implementation` | Agentic loop: write BDD specs then implement until all stories pass |
-| `stop-implementation` | Disable agentic mode |
-
-### Maintenance
-
-| Skill | Description |
-|-------|-------------|
-| `refactor-module` | Interactive refactoring: review code, discuss changes, update spec -> tests -> impl |
-| `sync` | Regenerate architecture views after git pulls or component changes |
-| `setup-project` | Verify Phoenix project prerequisites and initialize docs structure |
+Open Claude Code in your Phoenix project directory and ask the agent to call
+the `get_next_requirement` tool.
 
 ## How It Works
 
@@ -136,8 +88,8 @@ CodeMySpec runs a local server (`bin/cms`) that provides:
 
 - **MCP Server** — Exposes architecture tools (component graph, dependency validation,
   story mapping) to Claude Code over HTTP
-- **Agent Task API** — Skills dispatch work to specialized agents (spec-writer,
-  test-writer, code-writer) with role-specific prompts and tool access
+- **Agent Task API** — Hands the agent one requirement at a time with a
+  role-specific prompt
 - **Hooks** — Intercepts file writes and test runs for real-time feedback
 
 The extension includes a **knowledge base** with framework guides for Phoenix
@@ -182,7 +134,7 @@ chmod +x bin/cms
 
 ### Server not running
 
-Skills require the local server. Start it with:
+Hooks require the local server. Start it with:
 
 ```bash
 bin/cms server

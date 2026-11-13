@@ -5,7 +5,11 @@
         "hooks": [
           {
             "type": "command",
-            "command": "python3 \"${CLAUDE_PLUGIN_ROOT}/hooks/post-hook.py\" session-start"
+            "command": "node",
+            "args": [
+              "${CLAUDE_PLUGIN_ROOT}/hooks/post-hook.cjs",
+              "session-start"
+            ]
           }
         ]
       }
@@ -15,7 +19,11 @@
         "hooks": [
           {
             "type": "command",
-            "command": "python3 \"${CLAUDE_PLUGIN_ROOT}/hooks/post-hook.py\" pre-tool-use"
+            "command": "node",
+            "args": [
+              "${CLAUDE_PLUGIN_ROOT}/hooks/post-hook.cjs",
+              "pre-tool-use"
+            ]
           }
         ]
       }
@@ -25,7 +33,11 @@
         "hooks": [
           {
             "type": "command",
-            "command": "python3 \"${CLAUDE_PLUGIN_ROOT}/hooks/post-hook.py\" post-tool-use"
+            "command": "node",
+            "args": [
+              "${CLAUDE_PLUGIN_ROOT}/hooks/post-hook.cjs",
+              "post-tool-use"
+            ]
           }
         ]
       }
@@ -35,7 +47,11 @@
         "hooks": [
           {
             "type": "command",
-            "command": "python3 \"${CLAUDE_PLUGIN_ROOT}/hooks/post-hook.py\" stop"
+            "command": "node",
+            "args": [
+              "${CLAUDE_PLUGIN_ROOT}/hooks/post-hook.cjs",
+              "stop"
+            ]
           }
         ]
       }
@@ -45,7 +61,11 @@
         "hooks": [
           {
             "type": "command",
-            "command": "python3 \"${CLAUDE_PLUGIN_ROOT}/hooks/post-hook.py\" user-prompt-submit"
+            "command": "node",
+            "args": [
+              "${CLAUDE_PLUGIN_ROOT}/hooks/post-hook.cjs",
+              "user-prompt-submit"
+            ]
           }
         ]
       }
@@ -55,7 +75,11 @@
         "hooks": [
           {
             "type": "command",
-            "command": "python3 \"${CLAUDE_PLUGIN_ROOT}/hooks/post-hook.py\" session-end"
+            "command": "node",
+            "args": [
+              "${CLAUDE_PLUGIN_ROOT}/hooks/post-hook.cjs",
+              "session-end"
+            ]
           }
         ]
       }
@@ -65,7 +89,11 @@
         "hooks": [
           {
             "type": "command",
-            "command": "python3 \"${CLAUDE_PLUGIN_ROOT}/hooks/post-hook.py\" notification"
+            "command": "node",
+            "args": [
+              "${CLAUDE_PLUGIN_ROOT}/hooks/post-hook.cjs",
+              "notification"
+            ]
           }
         ]
       }
