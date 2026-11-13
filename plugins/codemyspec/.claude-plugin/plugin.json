@@ -19,7 +19,7 @@
   "mcpServers": {
     "local": {
       "type": "http",
-      "url": "${CMS_SERVER_URL:-https://codemyspec.com}/mcp/harness"
+      "url": "https://codemyspec.com/mcp/harness"
     }
   },
   "name": "codemyspec",
