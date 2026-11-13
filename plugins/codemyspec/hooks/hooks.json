@@ -1,29 +1,12 @@
 {
   "hooks": {
-    "SessionStart": [
-      {
-        "hooks": [
-          {
-            "type": "command",
-            "command": "node",
-            "args": [
-              "${CLAUDE_PLUGIN_ROOT}/hooks/post-hook.cjs",
-              "session-start"
-            ]
-          }
-        ]
-      }
-    ],
     "PreToolUse": [
       {
         "hooks": [
           {
-            "type": "command",
-            "command": "node",
-            "args": [
-              "${CLAUDE_PLUGIN_ROOT}/hooks/post-hook.cjs",
-              "pre-tool-use"
-            ]
+            "type": "http",
+            "url": "http://127.0.0.1:4003/api/hooks/pre-tool-use",
+            "timeout": 30
           }
         ]
       }
@@ -32,12 +15,9 @@
       {
         "hooks": [
           {
-            "type": "command",
-            "command": "node",
-            "args": [
-              "${CLAUDE_PLUGIN_ROOT}/hooks/post-hook.cjs",
-              "post-tool-use"
-            ]
+            "type": "http",
+            "url": "http://127.0.0.1:4003/api/hooks/post-tool-use",
+            "timeout": 30
           }
         ]
       }
@@ -46,12 +26,9 @@
       {
         "hooks": [
           {
-            "type": "command",
-            "command": "node",
-            "args": [
-              "${CLAUDE_PLUGIN_ROOT}/hooks/post-hook.cjs",
-              "stop"
-            ]
+            "type": "http",
+            "url": "http://127.0.0.1:4003/api/hooks/stop",
+            "timeout": 30
           }
         ]
       }
@@ -60,12 +37,9 @@
       {
         "hooks": [
           {
-            "type": "command",
-            "command": "node",
-            "args": [
-              "${CLAUDE_PLUGIN_ROOT}/hooks/post-hook.cjs",
-              "user-prompt-submit"
-            ]
+            "type": "http",
+            "url": "http://127.0.0.1:4003/api/hooks/user-prompt-submit",
+            "timeout": 30
           }
         ]
       }
@@ -74,12 +48,9 @@
       {
         "hooks": [
           {
-            "type": "command",
-            "command": "node",
-            "args": [
-              "${CLAUDE_PLUGIN_ROOT}/hooks/post-hook.cjs",
-              "session-end"
-            ]
+            "type": "http",
+            "url": "http://127.0.0.1:4003/api/hooks/session-end",
+            "timeout": 30
           }
         ]
       }
@@ -88,12 +59,9 @@
       {
         "hooks": [
           {
-            "type": "command",
-            "command": "node",
-            "args": [
-              "${CLAUDE_PLUGIN_ROOT}/hooks/post-hook.cjs",
-              "notification"
-            ]
+            "type": "http",
+            "url": "http://127.0.0.1:4003/api/hooks/notification",
+            "timeout": 30
           }
         ]
       }

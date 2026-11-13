@@ -44,8 +44,7 @@ Either installer registers `cms` as a background service listening on
 install and restarts on boot. The plugin only talks to it — it never launches or
 downloads it.
 
-Set `CMS_HARNESS_PORT` in the Claude environment if your harness listens on a
-non-default port; the lifecycle hooks post to it.
+The lifecycle hooks post to the harness at `http://127.0.0.1:4003`.
 
 ### 2 · Install the plugin
 
