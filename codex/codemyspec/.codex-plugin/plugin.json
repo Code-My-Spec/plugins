@@ -5,7 +5,6 @@
   },
   "description": "Specification-driven development for Phoenix applications — design architecture, write specs, generate tests, and implement with specialized AI agents",
   "homepage": "https://codemyspec.com",
-  "hooks": "./hooks/hooks.json",
   "interface": {
     "capabilities": [
       "Read",
@@ -32,6 +31,5 @@
   "mcpServers": "./.mcp.json",
   "name": "codemyspec",
   "repository": "https://github.com/Code-My-Spec/plugins",
-  "skills": "./skills/",
-  "version": "2.0.834"
+  "version": "3.0.0"
 }

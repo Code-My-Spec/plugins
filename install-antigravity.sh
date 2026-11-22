@@ -36,7 +36,6 @@ install_to() {
   rm -rf "$dest"
   mkdir -p "$(dirname "$dest")"
   cp -R "$TMP" "$dest"
-  chmod +x "$dest/bin/ag-hook.sh"
   ok "Installed to $dest"
 }
 
@@ -50,7 +49,7 @@ fi
 echo
 ok "CodeMySpec plugin for Antigravity installed."
 echo
-echo "  Requires the cms server (skills, hooks, and MCP talk to it):"
-echo "    brew install Code-My-Spec/tap/codemyspec && brew services start codemyspec"
+echo "  Requires the loop:"
+echo "    brew install code-my-spec/tap/codemyspec && workflow init && brew services start codemyspec"
 echo
 echo "  Restart Antigravity (or reload plugins) to pick it up."

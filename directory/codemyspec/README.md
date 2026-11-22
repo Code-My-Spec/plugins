@@ -19,32 +19,18 @@ Full story → **[codemyspec.com/developers](https://codemyspec.com/developers)*
 
 ## Install
 
-Two pieces: a local **`cms` server** (a background process that hosts the tools) and the
-**Claude Code plugin** that drives it. Server first, then plugin — about five minutes.
+Add the MCP server, sign in, then ask your agent for what you want built.
 
-### 1 · Install the server
-
-**macOS (Apple Silicon):**
+### 1 · Install the loop
 
 ```sh
-brew install Code-My-Spec/tap/codemyspec
+brew install code-my-spec/tap/codemyspec
+workflow init
 brew services start codemyspec
 ```
 
-**Windows (x64):** download `cms-setup-x64.msi` from the
-[latest release](https://github.com/Code-My-Spec/plugins/releases) and run it, or from an
-elevated PowerShell:
-
-```powershell
-iwr -useb https://raw.githubusercontent.com/Code-My-Spec/plugins/main/install.ps1 -OutFile install.ps1; .\install.ps1
-```
-
-Either installer registers `cms` as a background service listening on
-`http://localhost:4003`, and puts `cms` and `cms-mcp-relay` on your `PATH`. It starts on
-install and restarts on boot. The plugin only talks to it — it never launches or
-downloads it.
-
-The lifecycle hooks post to the harness at `http://127.0.0.1:4003`.
+`brew install code-my-spec/tap/codemyspec` installs the loop (`workflow`) and the optional
+local runner.
 
 ### 2 · Install the plugin
 
@@ -55,15 +41,14 @@ In Claude Code:
 /plugin install codemyspec@codemyspec
 ```
 
+The plugin adds the MCP server `https://codemyspec.com/mcp/harness`.
+
 ### 3 · First run
 
 Open Claude Code in your Phoenix project and sign in once: run `/mcp`, pick the
-`codemyspec` server, and authenticate in the browser.
-
-Then tell the agent to use the `get_next_requirement` tool. **That's the only command you
-need to remember** — every time the agent doesn't know what to do next, the answer is the
-same: `get_next_requirement`. It walks you through linking the project, syncing
-components, and handing off the next unit of work.
+`codemyspec` server, and authenticate in the browser. Then ask your agent for what you
+want built. The tools are what the server lists: `health`, `start_here`, `tool_docs`,
+`run_script`, `say`, and through `run_script` the project tools.
 
 ---
 
@@ -85,24 +70,19 @@ then walks your agent through it, one reviewable step at a time:
 4. **Implement** — write code that passes the tests
 5. **QA** — browser-based checks against your running app
 
-Each step comes with a role-specific prompt and the rules for that component type. The
-local server tracks the architecture graph, validates dependencies, and serves the next
-actionable requirement — so the agent stays on-rails and the codebase doesn't rot as it
-grows.
+Each step comes with a role-specific prompt and the rules for that component type, so the
+agent stays on-rails and the codebase doesn't rot as it grows.
 
 ## Requirements
 
-- macOS (Apple Silicon) or Windows (x64)
+- macOS (Apple Silicon)
 - Claude Code CLI
 - For your Phoenix project: Elixir 1.18+, Phoenix 1.8+, PostgreSQL
 
-## Managing & updating the server
+## Managing & updating the loop
 
-- **macOS:** `brew services restart codemyspec` to restart; `brew upgrade codemyspec` to
-  update. Logs at `/opt/homebrew/var/log/codemyspec.log`.
-- **Windows:** `Restart-Service CodeMySpec` to restart; re-run the MSI (or `install.ps1`)
-  to update in place, `.\install.ps1 -Uninstall` to remove. Data and logs live under
-  `C:\ProgramData\CodeMySpec`.
+`brew services restart codemyspec` to restart; `brew upgrade codemyspec` to update. Logs
+at `/opt/homebrew/var/log/codemyspec.log`.
 
 ## License
 

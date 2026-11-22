@@ -10,27 +10,20 @@ maintain spec compliance.
 
 ## Installation
 
-CodeMySpec is two pieces: the `cms` server, a local background OS service that
-hosts the MCP tools and architecture graph, and the Claude Code plugin that
-drives it. Install the server first, then the plugin.
+Add the MCP server, sign in, then ask your agent for what you want built.
+The tools are what the server lists (`health`, `start_here`, `tool_docs`,
+`run_script`, `say`, and through `run_script` the project tools).
 
-### 1. Install the `cms` server
+### 1. Install the loop
 
-macOS (Apple Silicon):
 ```
-brew install Code-My-Spec/tap/codemyspec
+brew install code-my-spec/tap/codemyspec
+workflow init
 brew services start codemyspec
 ```
 
-Windows (x64): download `cms-setup-x64.msi` from the latest release and run it,
-or from an elevated PowerShell:
-```
-iwr -useb https://raw.githubusercontent.com/Code-My-Spec/plugins/main/install.ps1 -OutFile install.ps1; .\install.ps1
-```
-
-Either installer registers `cms` as a background service (launchd via `brew
-services` on macOS, a Shawl-wrapped service via the MSI) listening on
-http://localhost:4003, and puts `cms` and `cms-mcp-relay` on your PATH.
+`brew install code-my-spec/tap/codemyspec` installs the loop (`workflow`)
+and the optional local runner.
 
 ### 2. Install the plugin
 
@@ -52,8 +45,8 @@ curl -fsSL https://raw.githubusercontent.com/Code-My-Spec/plugins/main/install-a
 Or manually: the plugin lives under `antigravity/codemyspec/` — with this
 repo checked out, `agy plugin install ./antigravity/codemyspec`, or copy
 that directory into your workspace's `.agents/plugins/` (workspace-scoped)
-or `~/.gemini/config/plugins/` (global). The `cms` server install from
-step 1 is required either way.
+or `~/.gemini/config/plugins/` (global). The loop install from step 1 is
+required either way.
 
 ### OpenAI Codex
 
@@ -64,37 +57,24 @@ a Codex plugin marketplace:
 codex plugin marketplace add Code-My-Spec/plugins
 ```
 
-Then install `codemyspec` from the `/plugins` picker, and trust its hooks
-via `/hooks`. The `cms` server install from step 1 is required.
+Then install `codemyspec` from the `/plugins` picker. The loop install
+from step 1 is required.
 
 ## Layout
 
 - `.claude-plugin/marketplace.json` — Claude Code marketplace manifest
 - `.agents/plugins/marketplace.json` — Codex marketplace catalog
 - `plugins/codemyspec/` — the CodeMySpec Claude Code plugin (manifest, MCP
-  config, hooks)
-- `antigravity/codemyspec/` — the Google Antigravity port (skills, agents,
-  rules, hooks, MCP config)
-- `codex/codemyspec/` — the OpenAI Codex port (skills, hooks, MCP config)
+  config)
+- `antigravity/codemyspec/` — the Google Antigravity port (rules, MCP
+  config)
+- `codex/codemyspec/` — the OpenAI Codex port (MCP config)
 
 ## Getting Started
 
-Open Claude Code in your Phoenix project directory and ask the agent to call
-the `get_next_requirement` tool.
-
-## How It Works
-
-CodeMySpec runs a local server (`bin/cms`) that provides:
-
-- **MCP Server** — Exposes architecture tools (component graph, dependency validation,
-  story mapping) to Claude Code over HTTP
-- **Agent Task API** — Hands the agent one requirement at a time with a
-  role-specific prompt
-- **Hooks** — Intercepts file writes and test runs for real-time feedback
-
-The extension includes a **knowledge base** with framework guides for Phoenix
-LiveView, HEEx, Tailwind/DaisyUI, BDD testing, and clean architecture patterns.
-Agents reference these during generation for accurate, idiomatic code.
+Open Claude Code in your Phoenix project directory, sign in to the
+`codemyspec` MCP server (https://codemyspec.com/mcp/harness) with `/mcp`,
+then ask your agent for what you want built.
 
 ### Project Structure
 
@@ -102,43 +82,18 @@ CodeMySpec creates and manages these directories in your Phoenix project:
 
 ```
 .code_my_spec/
-├── spec/               # Component specifications (mirrors Elixir namespace)
 ├── rules/              # Design and test rules by component type
-├── architecture/       # Dependency graph, namespace hierarchy, overview
-├── status/             # Implementation checklists
+├── architecture/       # Technology decisions
 ├── knowledge/          # Project-specific research
-├── plugin_knowledge/   # Framework knowledge (symlink to plugin)
-├── design/             # Design system assets
-├── issues/             # Known bugs and technical debt
-└── qa/                 # QA test results
+└── issues/             # Known bugs and technical debt
 ```
 
 ## Requirements
 
-- macOS (Apple Silicon or Intel) or Linux
+- macOS (Apple Silicon)
 - Claude Code CLI
 - Elixir 1.18+, Phoenix 1.8+, PostgreSQL
-- A CodeMySpec account (OAuth login via `cms login`)
-
-## Troubleshooting
-
-### macOS security warning
-
-If macOS blocks the binary, allow it in System Preferences > Security & Privacy.
-
-### Permission denied
-
-```bash
-chmod +x bin/cms
-```
-
-### Server not running
-
-Hooks require the local server. Start it with:
-
-```bash
-bin/cms server
-```
+- A CodeMySpec account (sign in through the MCP server)
 
 ## License
 
