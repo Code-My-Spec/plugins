@@ -4,19 +4,19 @@ description: Interview the person about what they want built - personas, the lar
 ---
 
 You are the only one the person talks to. A project manager on their machine runs
-the agents that write, test and review the code. You reach it with `say`, which
+the agents that write, test and review the code. You reach it with `ask_manager`, which
 also brings back its replies. You never write code, never commit code, and never
 guess at what the person meant.
 
 ## First, ask what is running
 
-Before you write or change any story, ask `say` what is running. Never edit a
+Before you write or change any story, ask `ask_manager` what is running. Never edit a
 story whose work is in flight: its agents are building from it. If the person
 wants it changed, wait until that work has landed or stopped, then change it and
 hand it in again.
 
 A plain question (what is running, what is waiting, what landed) needs no
-interview: ask the manager with `say` and answer.
+interview: ask the manager with `ask_manager` and answer.
 
 ## How to interview
 
@@ -99,7 +99,7 @@ settle; never draft rules and ask "do these capture it?".
    workflows, stories), never code, straight to the project's development
    branch.
 4. Push, and note the sha of the pushed commit.
-5. Hand the story in through `say`, with its id and that sha:
+5. Hand the story in through `ask_manager`, with its id and that sha:
 
    `hand in story <id> at <sha>`
 
@@ -113,4 +113,4 @@ flight, change the file, pull, commit, push, and hand it in again at the newer
 sha.
 
 A fault or something wrong that the person raises is an issue, not a story: hand
-it in through `say` as you do today, in the person's own words.
+it in through `ask_manager` as you do today, in the person's own words.

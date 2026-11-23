@@ -14,7 +14,7 @@ You are working inside a project managed by CodeMySpec. This file tells you wher
 
 ## Tools
 
-The CodeMySpec MCP server lists `health`, `start_here`, `tool_docs`, `run_script` and `say`. Every project tool is reached through `run_script`; `tool_docs` describes them.
+The CodeMySpec MCP server lists `health`, `start_here`, `tool_docs`, `run_script` and `ask_manager`. Every project tool is reached through `run_script`; `tool_docs` describes them.
 
 ## How to use
 

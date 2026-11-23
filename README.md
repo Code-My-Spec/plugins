@@ -12,7 +12,7 @@ maintain spec compliance.
 
 Add the MCP server, sign in, then ask your agent for what you want built.
 The tools are what the server lists (`health`, `start_here`, `tool_docs`,
-`run_script`, `say`, and through `run_script` the project tools).
+`run_script`, `ask_manager`, and through `run_script` the project tools).
 
 ### 1. Install the loop
 

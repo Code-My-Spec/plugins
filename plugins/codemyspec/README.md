@@ -48,7 +48,7 @@ The plugin adds the MCP server `https://codemyspec.com/mcp/harness`.
 Open Claude Code in your Phoenix project and sign in once: run `/mcp`, pick the
 `codemyspec` server, and authenticate in the browser. Then ask your agent for what you
 want built. The tools are what the server lists: `health`, `start_here`, `tool_docs`,
-`run_script`, `say`, and through `run_script` the project tools.
+`run_script`, `ask_manager`, and through `run_script` the project tools.
 
 ---
 
