@@ -13,5 +13,6 @@ the user through it; they run each command themselves.
 2. Add CodeMySpec's marketplace and install the full plugin, in Claude Code:
    `/plugin marketplace add Code-My-Spec/plugins`, then
    `/plugin install codemyspec@codemyspec`.
-3. Uninstall this Directory listing's `codemyspec` plugin so the two don't both load.
+3. If this `codemyspec` plugin came from Anthropic's plugin Directory, uninstall
+   that copy so the two don't both load.
 4. Restart Claude Code in the project folder and sign in when prompted.
